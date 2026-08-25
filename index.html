@@ -127,11 +127,6 @@
       background:rgba(193,102,107,0.14); border:1px solid rgba(193,102,107,0.4);
       color:var(--danger-hi); font-size:13px; padding:10px 12px; border-radius:8px; margin-bottom:16px;
     }
-    .success-box{
-      background:rgba(139,196,185,0.14); border:1px solid rgba(139,196,185,0.4);
-      color:var(--mint); font-size:13px; padding:10px 12px; border-radius:8px; margin-bottom:16px;
-    }
-
     .modal-overlay{
       position:fixed; inset:0; background:rgba(15,18,21,0.72); backdrop-filter:blur(2px);
       display:flex; align-items:center; justify-content:center; z-index:50; padding:20px;
@@ -206,12 +201,6 @@
     }
     @keyframes toastin{ from{opacity:0; transform:translate(-50%,8px);} to{opacity:1; transform:translate(-50%,0);} }
     .hint{font-size:11.5px; color:var(--slate); margin-top:6px;}
-    .divider-note{
-      display:flex; align-items:center; gap:10px; margin:22px 0 4px;
-      color:var(--slate); font-size:11px; font-family:var(--font-mono);
-      text-transform:uppercase; letter-spacing:1px;
-    }
-    .divider-note::before, .divider-note::after{content:""; flex:1; height:1px; background:var(--line);}
 
     .logout-x{
       background:none; border:1px solid var(--line); color:var(--bluegray); border-radius:7px;
@@ -235,13 +224,27 @@
 
   <div id="app"><div class="loading-wrap"><span class="spinner"></span>Carregando…</div></div>
 
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
   <script>
   (function(){
     "use strict";
 
+    // Insira as credenciais do seu projeto Firebase aqui:
+    var firebaseConfig = {
+      databaseURL: "https://SEU-PROJETO.firebaseio.com"
+    };
+
+    var db = null;
+    if(typeof firebase !== "undefined" && firebaseConfig.databaseURL.indexOf("SEU-PROJETO") === -1){
+      firebase.initializeApp(firebaseConfig);
+      db = firebase.database();
+    }
+
     var ADMIN_CODE = "SACDETRAN";
     var ADMIN_PASS = "ADMINSAC";
-    var STORAGE_KEY = "sac-users";
 
     var state = {
       booted: false,
@@ -308,25 +311,38 @@
       }, 2600);
     }
 
-    // ---------- Storage Corrigido ----------
-    async function loadUsers(){
-      try {
-        var data = localStorage.getItem(STORAGE_KEY);
-        state.users = data ? JSON.parse(data) : [];
-      } catch(e) {
-        state.users = [];
+    // ---------- Conexão com Firebase em Tempo Real ----------
+    function syncUsers(){
+      if(db){
+        db.ref("users").on("value", function(snapshot){
+          var val = snapshot.val();
+          state.users = val ? Object.values(val) : [];
+          state.booted = true;
+          render();
+        });
+      } else {
+        // Fallback para localStorage caso o Firebase não seja configurado ainda
+        try {
+          var data = localStorage.getItem("sac-users");
+          state.users = data ? JSON.parse(data) : [];
+        } catch(e){ state.users = []; }
+        state.booted = true;
+        render();
       }
-      state.booted = true;
-      render();
     }
 
     async function saveUsers(){
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(state.users));
+      if(db){
+        try {
+          await db.ref("users").set(state.users);
+          return true;
+        } catch(e){
+          showToast("Erro ao salvar no servidor.");
+          return false;
+        }
+      } else {
+        localStorage.setItem("sac-users", JSON.stringify(state.users));
         return true;
-      } catch(e) {
-        showToast("Erro ao salvar dados. Tente novamente.");
-        return false;
       }
     }
 
@@ -751,8 +767,8 @@
       render();
     }
 
-    // Inicializar
-    loadUsers();
+    // Inicializar sincronização
+    syncUsers();
   })();
   </script>
 </body>
