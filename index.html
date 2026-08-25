@@ -1,17 +1,733 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title>Sistema de RH</title>
-  <style>
-    body { font-family: Arial, sans-serif; padding: 40px; background: #f4f6f8; }
-    .card { background: white; padding: 20px; border-radius: 8px; max-width: 400px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SAC DETRAN</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-primary:#23272D;
+    --bg-card:#2F353D;
+    --bg-card-hi:#3A414A;
+    --line:#454E58;
+    --teal-deep:#0F4C5C;
+    --teal:#1B6B7A;
+    --mint:#8BC4B9;
+    --amber:#F2C14E;
+    --amber-hi:#F7D77A;
+    --amber-dim:#B08A2F;
+    --cream:#FFF4D6;
+    --offwhite:#F2F7F6;
+    --slate:#8C97A1;
+    --bluegray:#9AA5B1;
+    --danger:#C1666B;
+    --danger-hi:#D98488;
+    --font-display:'Rajdhani',sans-serif;
+    --font-body:'Inter',sans-serif;
+    --font-mono:'JetBrains Mono',monospace;
+  }
+  *{box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    margin:0;
+    font-family:var(--font-body);
+    background:var(--bg-primary);
+    color:var(--offwhite);
+    min-height:100vh;
+    position:relative;
+    overflow-x:hidden;
+  }
+  #bg-layer{
+    position:fixed; inset:0; z-index:0;
+    background:
+      radial-gradient(1100px 700px at 82% 8%, rgba(27,107,122,0.55), transparent 60%),
+      radial-gradient(900px 600px at 100% 100%, rgba(15,76,92,0.6), transparent 55%),
+      var(--bg-primary);
+  }
+  #bg-lines{position:fixed; inset:0; z-index:0; opacity:0.16; pointer-events:none;}
+  #app{position:relative; z-index:1; min-height:100vh; display:flex; flex-direction:column;}
+
+  .center-wrap{
+    flex:1; display:flex; align-items:center; justify-content:center; padding:32px 20px;
+  }
+
+  .brand{display:flex; align-items:center; gap:14px; justify-content:center; margin-bottom:6px;}
+  .brand-mark{width:46px; height:46px; flex-shrink:0;}
+  .brand-text{text-align:left;}
+  .brand-title{
+    font-family:var(--font-display); font-weight:700; font-size:26px; letter-spacing:0.5px;
+    color:var(--cream); line-height:1;
+  }
+  .brand-sub{
+    font-family:var(--font-mono); font-size:10.5px; letter-spacing:2.5px; text-transform:uppercase;
+    color:var(--mint); margin-top:4px;
+  }
+
+  .card{
+    width:100%; max-width:420px;
+    background:var(--bg-card);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:34px 32px 30px;
+    box-shadow:0 20px 60px rgba(0,0,0,0.35);
+    position:relative;
+    overflow:hidden;
+  }
+  .card::before{
+    content:"";
+    position:absolute; top:0; left:0; right:0; height:3px;
+    background:linear-gradient(90deg, var(--teal-deep), var(--amber), var(--mint));
+  }
+  .route-svg{display:block; margin:18px auto 22px; width:100%; max-width:220px; height:14px;}
+  .route-svg path{
+    fill:none; stroke:var(--amber); stroke-width:2; stroke-linecap:round;
+    stroke-dasharray:260; stroke-dashoffset:260;
+    animation:drawroute 1.4s ease forwards 0.2s;
+  }
+  @keyframes drawroute{ to{ stroke-dashoffset:0; } }
+
+  .field{margin-bottom:16px;}
+  .field label{
+    display:block; font-family:var(--font-mono); font-size:11px; letter-spacing:1.2px;
+    text-transform:uppercase; color:var(--bluegray); margin-bottom:7px;
+  }
+  .input-row{position:relative;}
+  input[type="text"], input[type="password"]{
+    width:100%; padding:12px 14px; border-radius:8px; border:1px solid var(--line);
+    background:var(--bg-primary); color:var(--offwhite); font-family:var(--font-body);
+    font-size:14.5px; outline:none; transition:border-color .15s, box-shadow .15s;
+  }
+  input[type="text"]:focus, input[type="password"]:focus{
+    border-color:var(--amber); box-shadow:0 0 0 3px rgba(242,193,78,0.18);
+  }
+  .toggle-eye{
+    position:absolute; right:10px; top:50%; transform:translateY(-50%);
+    background:none; border:none; cursor:pointer; padding:6px; color:var(--slate);
+    display:flex; align-items:center;
+  }
+  .toggle-eye:hover{color:var(--mint);}
+  .toggle-eye:focus-visible, button:focus-visible, .link-btn:focus-visible{
+    outline:2px solid var(--amber); outline-offset:2px;
+  }
+
+  .btn{
+    width:100%; padding:12px 16px; border-radius:8px; border:none; cursor:pointer;
+    font-family:var(--font-display); font-weight:700; font-size:15.5px; letter-spacing:0.4px;
+    transition:transform .1s, filter .15s; margin-top:4px;
+  }
+  .btn:active{transform:scale(0.985);}
+  .btn-primary{background:var(--amber); color:#2A2106;}
+  .btn-primary:hover{filter:brightness(1.08);}
+  .btn-primary:disabled{opacity:0.5; cursor:not-allowed; filter:none;}
+  .btn-secondary{background:transparent; border:1px solid var(--line); color:var(--offwhite);}
+  .btn-secondary:hover{border-color:var(--mint); color:var(--mint);}
+  .btn-danger-outline{background:transparent; border:1px solid var(--danger); color:var(--danger-hi);}
+  .btn-danger-outline:hover{background:rgba(193,102,107,0.12);}
+  .btn-ghost-teal{background:rgba(139,196,185,0.12); border:1px solid rgba(139,196,185,0.35); color:var(--mint);}
+  .btn-ghost-teal:hover{background:rgba(139,196,185,0.2);}
+  .btn-sm{width:auto; padding:7px 12px; font-size:12.5px;}
+
+  .link-btn{
+    background:none; border:none; color:var(--mint); font-family:var(--font-body);
+    font-size:13px; cursor:pointer; text-decoration:underline; text-underline-offset:3px; padding:4px;
+  }
+  .link-btn:hover{color:var(--amber-hi);}
+
+  .center-link{display:flex; justify-content:center; margin-top:18px;}
+
+  .error-box{
+    background:rgba(193,102,107,0.14); border:1px solid rgba(193,102,107,0.4);
+    color:var(--danger-hi); font-size:13px; padding:10px 12px; border-radius:8px; margin-bottom:16px;
+  }
+  .success-box{
+    background:rgba(139,196,185,0.14); border:1px solid rgba(139,196,185,0.4);
+    color:var(--mint); font-size:13px; padding:10px 12px; border-radius:8px; margin-bottom:16px;
+  }
+
+  /* Modal (admin gate) */
+  .modal-overlay{
+    position:fixed; inset:0; background:rgba(15,18,21,0.72); backdrop-filter:blur(2px);
+    display:flex; align-items:center; justify-content:center; z-index:50; padding:20px;
+  }
+
+  /* Admin dashboard */
+  .topbar{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:16px 26px; border-bottom:1px solid var(--line); background:rgba(47,53,61,0.7);
+    backdrop-filter:blur(6px); position:sticky; top:0; z-index:10;
+  }
+  .topbar .brand{margin-bottom:0;}
+  .topbar .brand-mark{width:32px; height:32px;}
+  .topbar .brand-title{font-size:18px;}
+  .topbar .brand-sub{font-size:9px;}
+
+  .dash-wrap{max-width:920px; margin:0 auto; padding:30px 22px 60px; width:100%;}
+  .section-title{
+    font-family:var(--font-display); font-weight:700; font-size:19px; color:var(--cream);
+    letter-spacing:0.3px; margin:0 0 4px;
+  }
+  .section-sub{color:var(--bluegray); font-size:13px; margin:0 0 18px;}
+
+  .panel{
+    background:var(--bg-card); border:1px solid var(--line); border-radius:12px;
+    padding:24px; margin-bottom:26px;
+  }
+  .grid-2{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
+  @media (max-width:560px){ .grid-2{grid-template-columns:1fr;} }
+
+  .credential-result{
+    background:var(--bg-primary); border:1px dashed var(--amber-dim); border-radius:10px;
+    padding:16px 18px; margin-top:16px;
+  }
+  .cred-row{display:flex; align-items:center; justify-content:space-between; padding:6px 0;}
+  .cred-label{font-family:var(--font-mono); font-size:10.5px; text-transform:uppercase; letter-spacing:1px; color:var(--bluegray);}
+  .cred-value{font-family:var(--font-mono); font-size:15px; color:var(--amber-hi); font-weight:600;}
+  .copy-btn{background:none; border:1px solid var(--line); color:var(--slate); border-radius:6px; padding:4px 9px; font-size:11px; cursor:pointer; font-family:var(--font-mono);}
+  .copy-btn:hover{color:var(--mint); border-color:var(--mint);}
+
+  table{width:100%; border-collapse:collapse; margin-top:6px;}
+  thead th{
+    text-align:left; font-family:var(--font-mono); font-size:10.5px; text-transform:uppercase;
+    letter-spacing:1px; color:var(--bluegray); padding:10px 10px; border-bottom:1px solid var(--line);
+  }
+  tbody td{padding:12px 10px; border-bottom:1px solid var(--line); font-size:13.5px; vertical-align:middle;}
+  tbody tr:last-child td{border-bottom:none;}
+  .user-cpf{font-family:var(--font-mono); color:var(--bluegray); font-size:12.5px;}
+  .badge{
+    display:inline-flex; align-items:center; gap:5px; padding:3px 10px; border-radius:100px;
+    font-family:var(--font-mono); font-size:10.5px; text-transform:uppercase; letter-spacing:0.8px;
+  }
+  .badge-active{background:rgba(139,196,185,0.15); color:var(--mint); border:1px solid rgba(139,196,185,0.35);}
+  .badge-inactive{background:rgba(193,102,107,0.15); color:var(--danger-hi); border:1px solid rgba(193,102,107,0.35);}
+  .badge-temp{background:rgba(242,193,78,0.15); color:var(--amber-hi); border:1px solid rgba(242,193,78,0.35); margin-left:6px;}
+  .row-actions{display:flex; gap:8px; flex-wrap:wrap;}
+  .empty-state{text-align:center; color:var(--bluegray); padding:30px 10px; font-size:13.5px;}
+
+  .maint-icon{width:64px; height:64px; margin:0 auto 20px; display:block;}
+  .maint-title{font-family:var(--font-display); font-weight:700; font-size:24px; color:var(--cream); margin:0 0 10px;}
+  .maint-text{color:var(--bluegray); font-size:14px; line-height:1.6; margin:0 0 26px;}
+
+  .loading-wrap{display:flex; align-items:center; justify-content:center; min-height:100vh; color:var(--bluegray); font-family:var(--font-mono); font-size:13px;}
+  .spinner{
+    width:18px; height:18px; border-radius:50%; border:2px solid var(--line); border-top-color:var(--amber);
+    animation:spin 0.8s linear infinite; margin-right:10px;
+  }
+  @keyframes spin{ to{ transform:rotate(360deg); } }
+
+  .toast{
+    position:fixed; bottom:24px; left:50%; transform:translateX(-50%);
+    background:var(--bg-card-hi); border:1px solid var(--line); color:var(--offwhite);
+    padding:12px 20px; border-radius:9px; font-size:13.5px; z-index:100; box-shadow:0 10px 30px rgba(0,0,0,0.4);
+    animation:toastin .2s ease;
+  }
+  @keyframes toastin{ from{opacity:0; transform:translate(-50%,8px);} to{opacity:1; transform:translate(-50%,0);} }
+
+  .hint{font-size:11.5px; color:var(--slate); margin-top:6px;}
+  .divider-note{
+    display:flex; align-items:center; gap:10px; margin:22px 0 4px; color:var(--slate); font-size:11px;
+    font-family:var(--font-mono); text-transform:uppercase; letter-spacing:1px;
+  }
+  .divider-note::before, .divider-note::after{content:""; flex:1; height:1px; background:var(--line);}
+
+  .logout-x{
+    background:none; border:1px solid var(--line); color:var(--bluegray); border-radius:7px;
+    padding:8px 14px; font-family:var(--font-body); font-size:12.5px; cursor:pointer;
+  }
+  .logout-x:hover{border-color:var(--danger); color:var(--danger-hi);}
+</style>
 </head>
 <body>
-  <div class="card">
-    <h2>Base de Dados de RH</h2>
-    <p>Bem-vindo ao sistema!</p>
-  </div>
+<div id="bg-layer"></div>
+<svg id="bg-lines" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice">
+  <g stroke="var(--mint)" stroke-width="1" fill="none">
+    <path d="M -50 700 L 300 350 L 600 500 L 950 100 L 1300 250"/>
+    <path d="M -50 500 L 250 600 L 500 300 L 800 450 L 1250 50"/>
+    <path d="M -100 150 L 350 250 L 700 50 L 1000 300 L 1300 150"/>
+    <circle cx="880" cy="120" r="60"/>
+    <circle cx="880" cy="120" r="110"/>
+    <circle cx="200" cy="620" r="50"/>
+  </g>
+</svg>
+<div id="app"><div class="loading-wrap"><span class="spinner"></span>Carregando…</div></div>
+
+<script>
+(function(){
+  "use strict";
+
+  var ADMIN_CODE = "SACDETRAN";
+  var ADMIN_PASS = "ADMINSAC";
+  var STORAGE_KEY = "sac-users";
+
+  var state = {
+    booted:false,
+    users:[],
+    screen:"login", // login | adminGate | admin | changePassword | maintenance
+    currentUser:null,
+    isAdmin:false,
+    error:"",
+    lastCredential:null, // {username, cpf, password} for admin panel display
+    toast:null
+  };
+
+  var app = document.getElementById("app");
+
+  function logoSVG(size){
+    size = size || 46;
+    return '<svg class="brand-mark" viewBox="0 0 100 100" width="'+size+'" height="'+size+'" xmlns="http://www.w3.org/2000/svg">' +
+      '<path d="M20 12 H50 C68 12 80 26 80 50 C80 74 68 88 50 88 H20 V64 H48 C56 64 60 58 60 50 C60 42 56 36 48 36 H20 Z" fill="none" stroke="var(--amber)" stroke-width="7" stroke-linejoin="round"/>' +
+      '<circle cx="34" cy="60" r="9" fill="none" stroke="var(--amber)" stroke-width="6"/>' +
+      '<circle cx="60" cy="60" r="9" fill="none" stroke="var(--amber)" stroke-width="6"/>' +
+      '<path d="M34 60 L48 42 L58 42 L50 52 L60 60" fill="none" stroke="var(--amber)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>' +
+      '<path d="M46 40 Q50 32 58 34" fill="none" stroke="var(--amber)" stroke-width="6" stroke-linecap="round"/>' +
+      '</svg>';
+  }
+
+  function eyeSVG(open){
+    if(open){
+      return '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z"/><circle cx="12" cy="12" r="3"/></svg>';
+    }
+    return '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 20c-7 0-11-8-11-8a20.6 20.6 0 0 1 5.06-6.06M9.9 4.24A10.6 10.6 0 0 1 12 4c7 0 11 8 11 8a20.7 20.7 0 0 1-3.22 4.44M14.12 14.12A3 3 0 1 1 9.88 9.88"/><line x1="1" y1="1" x2="23" y2="23"/></svg>';
+  }
+
+  function escapeHTML(s){
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function(c){
+      return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];
+    });
+  }
+
+  function genPassword(){
+    var chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+    var out = "";
+    for(var i=0;i<8;i++){ out += chars[Math.floor(Math.random()*chars.length)]; }
+    return out;
+  }
+
+  function onlyDigits(v){ return (v||"").replace(/\D/g,""); }
+
+  function formatCPF(v){
+    var d = onlyDigits(v).slice(0,11);
+    var out = d;
+    if(d.length > 9) out = d.replace(/(\d{3})(\d{3})(\d{3})(\d{1,2})/, "$1.$2.$3-$4");
+    else if(d.length > 6) out = d.replace(/(\d{3})(\d{3})(\d{1,3})/, "$1.$2.$3");
+    else if(d.length > 3) out = d.replace(/(\d{3})(\d{1,3})/, "$1.$2");
+    return out;
+  }
+
+  function showToast(msg){
+    state.toast = msg;
+    render();
+    setTimeout(function(){ state.toast = null; var t=document.getElementById("toast-el"); if(t) t.remove(); }, 2600);
+  }
+
+  // ---------- Storage ----------
+  async function loadUsers(){
+    try{
+      var res = await window.storage.get(STORAGE_KEY, true);
+      state.users = res && res.value ? JSON.parse(res.value) : [];
+    }catch(e){
+      state.users = [];
+    }
+    state.booted = true;
+    render();
+  }
+
+  async function saveUsers(){
+    try{
+      await window.storage.set(STORAGE_KEY, JSON.stringify(state.users), true);
+      return true;
+    }catch(e){
+      showToast("Erro ao salvar dados. Tente novamente.");
+      return false;
+    }
+  }
+
+  function findUser(username){
+    var u = (username||"").trim().toLowerCase();
+    for(var i=0;i<state.users.length;i++){
+      if(state.users[i].username.toLowerCase() === u) return state.users[i];
+    }
+    return null;
+  }
+
+  // ---------- Render ----------
+  function render(){
+    if(!state.booted){
+      app.innerHTML = '<div class="loading-wrap"><span class="spinner"></span>Carregando…</div>';
+      return;
+    }
+    var html = "";
+    if(state.screen === "login") html = renderLogin();
+    else if(state.screen === "changePassword") html = renderChangePassword();
+    else if(state.screen === "maintenance") html = renderMaintenance();
+    else if(state.screen === "admin") html = renderAdmin();
+    else html = renderLogin();
+
+    if(state.screen === "adminGate"){
+      html = renderLogin() ; // keep login behind modal
+    }
+
+    app.innerHTML = html + (state.screen === "adminGate" ? renderAdminGateModal() : "") + (state.toast ? '<div class="toast" id="toast-el">'+escapeHTML(state.toast)+'</div>' : "");
+    attachHandlers();
+  }
+
+  function renderLogin(){
+    return ''+
+    '<div class="center-wrap">'+
+      '<div style="width:100%; max-width:420px;">'+
+        '<div class="brand" style="flex-direction:column; margin-bottom:4px;">'+
+          logoSVG(52)+
+          '<div class="brand-text" style="text-align:center; margin-top:10px;">'+
+            '<div class="brand-title">SAC DETRAN</div>'+
+            '<div class="brand-sub">Portal do Condutor</div>'+
+          '</div>'+
+        '</div>'+
+        '<svg class="route-svg" viewBox="0 0 220 14"><path d="M2 10 L40 10 L55 4 L80 4 L95 10 L140 10 L155 4 L180 4 L195 10 L218 10"/></svg>'+
+        '<div class="card">'+
+          (state.error ? '<div class="error-box">'+escapeHTML(state.error)+'</div>' : '')+
+          '<form id="login-form">'+
+            '<div class="field">'+
+              '<label for="login-user">Usuário</label>'+
+              '<input type="text" id="login-user" autocomplete="username" placeholder="Seu usuário" autocapitalize="none">'+
+            '</div>'+
+            '<div class="field">'+
+              '<label for="login-pass">Senha</label>'+
+              '<div class="input-row">'+
+                '<input type="password" id="login-pass" autocomplete="current-password" placeholder="Sua senha">'+
+                '<button type="button" class="toggle-eye" id="toggle-login-pass" aria-label="Mostrar senha">'+eyeSVG(false)+'</button>'+
+              '</div>'+
+            '</div>'+
+            '<button type="submit" class="btn btn-primary">Entrar</button>'+
+          '</form>'+
+          '<div class="center-link"><button class="link-btn" id="open-admin-gate">Acesso administrativo</button></div>'+
+        '</div>'+
+      '</div>'+
+    '</div>';
+  }
+
+  function renderAdminGateModal(){
+    return ''+
+    '<div class="modal-overlay" id="admin-gate-overlay">'+
+      '<div class="card" style="max-width:380px;">'+
+        '<div class="brand-text" style="text-align:center; margin-bottom:14px;">'+
+          '<div class="brand-title" style="font-size:19px;">Área administrativa</div>'+
+          '<div class="brand-sub">Autenticação restrita</div>'+
+        '</div>'+
+        (state.error ? '<div class="error-box">'+escapeHTML(state.error)+'</div>' : '')+
+        '<form id="admin-gate-form">'+
+          '<div class="field">'+
+            '<label for="admin-code">Código</label>'+
+            '<input type="text" id="admin-code" autocomplete="off" placeholder="Código de acesso">'+
+          '</div>'+
+          '<div class="field">'+
+            '<label for="admin-pass">Senha</label>'+
+            '<div class="input-row">'+
+              '<input type="password" id="admin-pass" autocomplete="off" placeholder="Senha administrativa">'+
+              '<button type="button" class="toggle-eye" id="toggle-admin-pass" aria-label="Mostrar senha">'+eyeSVG(false)+'</button>'+
+            '</div>'+
+          '</div>'+
+          '<button type="submit" class="btn btn-primary">Entrar</button>'+
+          '<button type="button" class="btn btn-secondary" id="cancel-admin-gate" style="margin-top:10px;">Cancelar</button>'+
+        '</form>'+
+      '</div>'+
+    '</div>';
+  }
+
+  function renderChangePassword(){
+    return ''+
+    '<div class="center-wrap">'+
+      '<div style="width:100%; max-width:420px;">'+
+        '<div class="brand" style="flex-direction:column; margin-bottom:4px;">'+
+          logoSVG(46)+
+          '<div class="brand-text" style="text-align:center; margin-top:10px;">'+
+            '<div class="brand-title" style="font-size:20px;">Primeiro acesso</div>'+
+            '<div class="brand-sub">Defina sua nova senha</div>'+
+          '</div>'+
+        '</div>'+
+        '<div class="card">'+
+          '<p style="color:var(--bluegray); font-size:13px; margin-top:0;">Por segurança, você precisa trocar a senha temporária antes de continuar, '+escapeHTML(state.currentUser ? state.currentUser.username : "")+'.</p>'+
+          (state.error ? '<div class="error-box">'+escapeHTML(state.error)+'</div>' : '')+
+          '<form id="change-pass-form">'+
+            '<div class="field">'+
+              '<label for="new-pass-1">Nova senha</label>'+
+              '<input type="password" id="new-pass-1" autocomplete="new-password" placeholder="Mínimo 6 caracteres">'+
+            '</div>'+
+            '<div class="field">'+
+              '<label for="new-pass-2">Confirmar nova senha</label>'+
+              '<input type="password" id="new-pass-2" autocomplete="new-password" placeholder="Repita a senha">'+
+            '</div>'+
+            '<button type="submit" class="btn btn-primary">Salvar e continuar</button>'+
+          '</form>'+
+        '</div>'+
+      '</div>'+
+    '</div>';
+  }
+
+  function renderMaintenance(){
+    return ''+
+    '<div class="topbar">'+
+      '<div class="brand">'+logoSVG(30)+'<div class="brand-text"><div class="brand-title" style="font-size:17px;">SAC DETRAN</div></div></div>'+
+      '<button class="logout-x" id="logout-btn">Sair</button>'+
+    '</div>'+
+    '<div class="center-wrap">'+
+      '<div style="text-align:center; max-width:420px;">'+
+        '<svg class="maint-icon" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.77z"/></svg>'+
+        '<div class="maint-title">Em manutenção</div>'+
+        '<p class="maint-text">Bem-vindo, '+escapeHTML(state.currentUser ? state.currentUser.username : "")+'. Esta área do portal está sendo preparada e estará disponível em breve.</p>'+
+        '<button class="btn btn-secondary" style="max-width:220px; margin:0 auto;" id="logout-btn-2">Sair</button>'+
+      '</div>'+
+    '</div>';
+  }
+
+  function renderAdmin(){
+    var rows = state.users.map(function(u){
+      var statusBadge = u.active
+        ? '<span class="badge badge-active">Ativo</span>'
+        : '<span class="badge badge-inactive">Inativo</span>';
+      var tempBadge = u.tempPassword ? '<span class="badge badge-temp">Senha temp.</span>' : '';
+      return '<tr>'+
+        '<td>'+escapeHTML(u.username)+'</td>'+
+        '<td class="user-cpf">'+escapeHTML(formatCPF(u.cpf))+'</td>'+
+        '<td>'+statusBadge+tempBadge+'</td>'+
+        '<td>'+
+          '<div class="row-actions">'+
+            '<button class="btn btn-sm btn-ghost-teal" data-action="reset" data-username="'+escapeHTML(u.username)+'">Resetar senha</button>'+
+            '<button class="btn btn-sm '+(u.active ? 'btn-danger-outline' : 'btn-ghost-teal')+'" data-action="toggle" data-username="'+escapeHTML(u.username)+'">'+(u.active ? 'Inativar' : 'Ativar')+'</button>'+
+          '</div>'+
+        '</td>'+
+      '</tr>';
+    }).join("");
+
+    return ''+
+    '<div class="topbar">'+
+      '<div class="brand">'+logoSVG(30)+'<div class="brand-text"><div class="brand-title" style="font-size:17px;">SAC DETRAN</div><div class="brand-sub" style="font-size:8.5px;">Painel administrativo</div></div></div>'+
+      '<button class="logout-x" id="logout-btn">Sair</button>'+
+    '</div>'+
+    '<div class="dash-wrap">'+
+      '<div class="panel">'+
+        '<div class="section-title">Novo usuário</div>'+
+        '<div class="section-sub">O nome de usuário é definido manualmente. A senha é gerada automaticamente e deve ser trocada no primeiro acesso.</div>'+
+        (state.error ? '<div class="error-box">'+escapeHTML(state.error)+'</div>' : '')+
+        '<form id="create-user-form">'+
+          '<div class="grid-2">'+
+            '<div class="field">'+
+              '<label for="new-username">Usuário</label>'+
+              '<input type="text" id="new-username" placeholder="ex: joao.silva" autocapitalize="none">'+
+            '</div>'+
+            '<div class="field">'+
+              '<label for="new-cpf">CPF</label>'+
+              '<input type="text" id="new-cpf" placeholder="000.000.000-00" inputmode="numeric" maxlength="14">'+
+            '</div>'+
+          '</div>'+
+          '<button type="submit" class="btn btn-primary" style="max-width:220px;">Gerar acesso</button>'+
+        '</form>'+
+        (state.lastCredential ? renderCredentialResult() : '')+
+      '</div>'+
+
+      '<div class="panel">'+
+        '<div class="section-title">Usuários cadastrados</div>'+
+        '<div class="section-sub">'+state.users.length+' usuário(s) no sistema.</div>'+
+        (state.users.length === 0
+          ? '<div class="empty-state">Nenhum usuário cadastrado ainda. Crie o primeiro acima.</div>'
+          : '<table><thead><tr><th>Usuário</th><th>CPF</th><th>Status</th><th>Ações</th></tr></thead><tbody>'+rows+'</tbody></table>')+
+      '</div>'+
+    '</div>';
+  }
+
+  function renderCredentialResult(){
+    var c = state.lastCredential;
+    return ''+
+    '<div class="credential-result">'+
+      '<div class="cred-row"><span class="cred-label">Usuário</span><span class="cred-value">'+escapeHTML(c.username)+'</span></div>'+
+      '<div class="cred-row"><span class="cred-label">CPF</span><span class="cred-value">'+escapeHTML(formatCPF(c.cpf))+'</span></div>'+
+      '<div class="cred-row"><span class="cred-label">Senha temporária</span><span style="display:flex; align-items:center; gap:8px;"><span class="cred-value">'+escapeHTML(c.password)+'</span><button class="copy-btn" id="copy-cred" type="button">Copiar</button></span></div>'+
+      '<div class="hint">Repasse esses dados ao usuário. A senha deverá ser trocada no primeiro acesso.</div>'+
+    '</div>';
+  }
+
+  // ---------- Handlers ----------
+  function attachHandlers(){
+    var loginForm = document.getElementById("login-form");
+    if(loginForm) loginForm.addEventListener("submit", handleLogin);
+
+    var toggleLoginPass = document.getElementById("toggle-login-pass");
+    if(toggleLoginPass) toggleLoginPass.addEventListener("click", function(){ togglePassVisibility("login-pass", toggleLoginPass); });
+
+    var openGate = document.getElementById("open-admin-gate");
+    if(openGate) openGate.addEventListener("click", function(){ state.error=""; state.screen="adminGate"; render(); });
+
+    var overlay = document.getElementById("admin-gate-overlay");
+    if(overlay) overlay.addEventListener("click", function(e){ if(e.target === overlay){ state.error=""; state.screen="login"; render(); } });
+
+    var cancelGate = document.getElementById("cancel-admin-gate");
+    if(cancelGate) cancelGate.addEventListener("click", function(){ state.error=""; state.screen="login"; render(); });
+
+    var gateForm = document.getElementById("admin-gate-form");
+    if(gateForm) gateForm.addEventListener("submit", handleAdminGate);
+
+    var toggleAdminPass = document.getElementById("toggle-admin-pass");
+    if(toggleAdminPass) toggleAdminPass.addEventListener("click", function(){ togglePassVisibility("admin-pass", toggleAdminPass); });
+
+    var changeForm = document.getElementById("change-pass-form");
+    if(changeForm) changeForm.addEventListener("submit", handleChangePassword);
+
+    var logoutBtn = document.getElementById("logout-btn");
+    if(logoutBtn) logoutBtn.addEventListener("click", handleLogout);
+    var logoutBtn2 = document.getElementById("logout-btn-2");
+    if(logoutBtn2) logoutBtn2.addEventListener("click", handleLogout);
+
+    var createForm = document.getElementById("create-user-form");
+    if(createForm) createForm.addEventListener("submit", handleCreateUser);
+
+    var cpfInput = document.getElementById("new-cpf");
+    if(cpfInput) cpfInput.addEventListener("input", function(){ cpfInput.value = formatCPF(cpfInput.value); });
+
+    var copyBtn = document.getElementById("copy-cred");
+    if(copyBtn) copyBtn.addEventListener("click", function(){
+      var c = state.lastCredential;
+      var text = "Usuário: "+c.username+" | CPF: "+formatCPF(c.cpf)+" | Senha: "+c.password;
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(text).then(function(){ showToast("Credenciais copiadas."); });
+      }else{
+        showToast("Não foi possível copiar automaticamente.");
+      }
+    });
+
+    document.querySelectorAll('[data-action="reset"]').forEach(function(btn){
+      btn.addEventListener("click", function(){ handleResetPassword(btn.getAttribute("data-username")); });
+    });
+    document.querySelectorAll('[data-action="toggle"]').forEach(function(btn){
+      btn.addEventListener("click", function(){ handleToggleActive(btn.getAttribute("data-username")); });
+    });
+  }
+
+  function togglePassVisibility(inputId, btn){
+    var input = document.getElementById(inputId);
+    var isPass = input.type === "password";
+    input.type = isPass ? "text" : "password";
+    btn.innerHTML = eyeSVG(isPass);
+  }
+
+  function handleLogin(e){
+    e.preventDefault();
+    var username = document.getElementById("login-user").value.trim();
+    var pass = document.getElementById("login-pass").value;
+    if(!username || !pass){
+      state.error = "Informe usuário e senha.";
+      render(); return;
+    }
+    var u = findUser(username);
+    if(!u || u.password !== pass){
+      state.error = "Usuário ou senha inválidos.";
+      render(); return;
+    }
+    if(!u.active){
+      state.error = "Este usuário está inativo. Procure o administrador.";
+      render(); return;
+    }
+    state.error = "";
+    state.currentUser = u;
+    state.screen = u.tempPassword ? "changePassword" : "maintenance";
+    render();
+  }
+
+  function handleAdminGate(e){
+    e.preventDefault();
+    var code = document.getElementById("admin-code").value.trim().toUpperCase();
+    var pass = document.getElementById("admin-pass").value.trim().toUpperCase();
+    if(code === ADMIN_CODE && pass === ADMIN_PASS){
+      state.error = "";
+      state.isAdmin = true;
+      state.lastCredential = null;
+      state.screen = "admin";
+      render();
+    }else{
+      state.error = "Código ou senha administrativa incorretos.";
+      render();
+    }
+  }
+
+  async function handleChangePassword(e){
+    e.preventDefault();
+    var p1 = document.getElementById("new-pass-1").value;
+    var p2 = document.getElementById("new-pass-2").value;
+    if(p1.length < 6){
+      state.error = "A nova senha deve ter no mínimo 6 caracteres.";
+      render(); return;
+    }
+    if(p1 !== p2){
+      state.error = "As senhas não coincidem.";
+      render(); return;
+    }
+    var u = findUser(state.currentUser.username);
+    u.password = p1;
+    u.tempPassword = false;
+    var ok = await saveUsers();
+    if(!ok) return;
+    state.error = "";
+    state.currentUser = u;
+    state.screen = "maintenance";
+    render();
+  }
+
+  function handleLogout(){
+    state.currentUser = null;
+    state.isAdmin = false;
+    state.error = "";
+    state.lastCredential = null;
+    state.screen = "login";
+    render();
+  }
+
+  async function handleCreateUser(e){
+    e.preventDefault();
+    var username = document.getElementById("new-username").value.trim();
+    var cpf = onlyDigits(document.getElementById("new-cpf").value);
+
+    if(!username){
+      state.error = "Informe o nome de usuário."; render(); return;
+    }
+    if(cpf.length !== 11){
+      state.error = "Informe um CPF válido (11 dígitos)."; render(); return;
+    }
+    if(findUser(username)){
+      state.error = "Já existe um usuário com esse nome."; render(); return;
+    }
+    var tempPass = genPassword();
+    var newUser = { username: username, cpf: cpf, password: tempPass, tempPassword: true, active: true, createdAt: Date.now() };
+    state.users.push(newUser);
+    var ok = await saveUsers();
+    if(!ok){ state.users.pop(); return; }
+    state.error = "";
+    state.lastCredential = { username: username, cpf: cpf, password: tempPass };
+    render();
+  }
+
+  async function handleResetPassword(username){
+    var u = findUser(username);
+    if(!u) return;
+    var newPass = genPassword();
+    u.password = newPass;
+    u.tempPassword = true;
+    var ok = await saveUsers();
+    if(!ok) return;
+    state.lastCredential = { username: u.username, cpf: u.cpf, password: newPass };
+    showToast("Senha de " + u.username + " redefinida.");
+  }
+
+  async function handleToggleActive(username){
+    var u = findUser(username);
+    if(!u) return;
+    u.active = !u.active;
+    var ok = await saveUsers();
+    if(!ok) return;
+    showToast(u.username + " agora está " + (u.active ? "ativo" : "inativo") + ".");
+  }
+
+  loadUsers();
+})();
+</script>
 </body>
 </html>
