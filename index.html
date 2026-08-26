@@ -208,6 +208,35 @@
       padding:8px 14px; font-family:var(--font-body); font-size:12.5px; cursor:pointer;
     }
     .logout-x:hover{border-color:var(--danger); color:var(--danger-hi);}
+    /* ====== ESTILOS DO PAINEL (adicione isso ao CSS existente) ====== */
+
+.nav-tabs{
+  display:flex; gap:8px; padding:14px 22px; max-width:920px; margin:0 auto;
+  flex-wrap:wrap;
+}
+.nav-tab{
+  display:flex; align-items:center; gap:8px; padding:10px 16px; border-radius:9px;
+  border:1px solid var(--line); background:var(--bg-card); color:var(--offwhite);
+  font-family:var(--font-body); font-size:13.5px; font-weight:500; cursor:pointer;
+  transition:border-color .15s, color .15s, background .15s;
+}
+.nav-tab svg{width:17px; height:17px; flex-shrink:0;}
+.nav-tab:hover{border-color:var(--mint); color:var(--mint);}
+.nav-tab.active{
+  background:rgba(242,193,78,0.14); border-color:var(--amber); color:var(--amber-hi);
+}
+
+.content-wrap{max-width:920px; margin:0 auto; padding:6px 22px 60px;}
+.screen{display:none;}
+.screen.active{display:block;}
+
+.maintenance-card{
+  background:var(--bg-card); border:1px solid var(--line); border-radius:12px;
+  padding:50px 30px; text-align:center; margin-top:14px;
+}
+.maint-icon{width:56px; height:56px; margin:0 auto 18px; display:block;}
+.maint-title{font-family:var(--font-display); font-weight:700; font-size:21px; color:var(--cream); margin:0 0 8px;}
+.maint-text{color:var(--bluegray); font-size:13.5px; line-height:1.6; margin:0;}
   </style>
 </head>
 <body>
@@ -469,21 +498,77 @@
       '</div>';
     }
 
-    function renderMaintenance(){
-      return ''+
-      '<div class="topbar">'+
-        '<div class="brand">'+logoSVG(30)+'<div class="brand-text"><div class="brand-title" style="font-size:17px;">SAC DETRAN</div></div></div>'+
-        '<button class="logout-x" id="logout-btn">Sair</button>'+
+function renderMaintenance(){
+  var usuario = state.currentUser || {};
+  
+  return ''+
+  // === TOPBAR ===
+  '<div class="topbar">'+
+    '<div class="brand">'+
+      '<svg class="brand-mark" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">'+
+        '<path d="M20 12 H50 C68 12 80 26 80 50 C80 74 68 88 50 88 H20 V64 H48 C56 64 60 58 60 50 C60 42 56 36 48 36 H20 Z" fill="none" stroke="var(--amber)" stroke-width="7" stroke-linejoin="round"/>'+
+        '<circle cx="34" cy="60" r="9" fill="none" stroke="var(--amber)" stroke-width="6"/>'+
+        '<circle cx="60" cy="60" r="9" fill="none" stroke="var(--amber)" stroke-width="6"/>'+
+        '<path d="M34 60 L48 42 L58 42 L50 52 L60 60" fill="none" stroke="var(--amber)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>'+
+        '<path d="M46 40 Q50 32 58 34" fill="none" stroke="var(--amber)" stroke-width="6" stroke-linecap="round"/>'+
+      '</svg>'+
+      '<div>'+
+        '<div class="brand-title">SAC DETRAN</div>'+
+        '<div class="brand-sub">Painel do usuário</div>'+
       '</div>'+
-      '<div class="center-wrap">'+
-        '<div style="text-align:center; max-width:420px;">'+
-          '<svg class="maint-icon" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.77z"/></svg>'+
-          '<div class="maint-title">Em manutenção</div>'+
-          '<p class="maint-text">Bem-vindo, '+escapeHTML(state.currentUser ? state.currentUser.username : "")+'. Esta área do portal está sendo preparada e estará disponível em breve.</p>'+
-          '<button class="btn btn-secondary" style="max-width:220px; margin:0 auto;" id="logout-btn-2">Sair</button>'+
-        '</div>'+
-      '</div>';
-    }
+    '</div>'+
+    '<div style="display:flex; gap:10px; align-items:center;">'+
+      '<span style="font-size:13px; color:var(--bluegray);">'+escapeHTML(usuario.username)+'</span>'+
+      '<button class="logout-x" id="logout-btn">Sair</button>'+
+    '</div>'+
+  '</div>'+
+
+  // === NAVEGAÇÃO POR ABAS ===
+  '<div class="nav-tabs">'+
+    '<button class="nav-tab active" data-screen="inicio">'+
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v9a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1v-9"/></svg>'+
+      'Início'+
+    '</button>'+
+    '<button class="nav-tab" data-screen="adicionar">'+
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="16" y1="11" x2="22" y2="11"/></svg>'+
+      'Adicionar colaborador'+
+    '</button>'+
+    '<button class="nav-tab" data-screen="editar">'+
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>'+
+      'Editar colaborador'+
+    '</button>'+
+  '</div>'+
+
+  // === CONTEÚDO ===
+  '<div class="content-wrap">'+
+    // Aba INÍCIO
+    '<section class="screen active" id="screen-inicio">'+
+      '<div class="maintenance-card">'+
+        '<svg class="maint-icon" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.77z"/></svg>'+
+        '<div class="maint-title">Em manutenção</div>'+
+        '<p class="maint-text">Esta página está sendo preparada e estará disponível em breve.</p>'+
+      '</div>'+
+    '</section>'+
+
+    // Aba ADICIONAR
+    '<section class="screen" id="screen-adicionar">'+
+      '<div class="maintenance-card">'+
+        '<svg class="maint-icon" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.77z"/></svg>'+
+        '<div class="maint-title">Em manutenção</div>'+
+        '<p class="maint-text">Esta página está sendo preparada e estará disponível em breve.</p>'+
+      '</div>'+
+    '</section>'+
+
+    // Aba EDITAR
+    '<section class="screen" id="screen-editar">'+
+      '<div class="maintenance-card">'+
+        '<svg class="maint-icon" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.77z"/></svg>'+
+        '<div class="maint-title">Em manutenção</div>'+
+        '<p class="maint-text">Esta página está sendo preparada e estará disponível em breve.</p>'+
+      '</div>'+
+    '</section>'+
+  '</div>';
+}
 
     function renderAdmin(){
       var rows = state.users.map(function(u){
@@ -594,7 +679,42 @@
           else if(act === "toggle") handleToggleUserStatus(u);
         });
       });
-    }
+      // Navegação por abas
+  document.querySelectorAll(".nav-tab").forEach(function(tab){
+    tab.addEventListener("click", function(){
+      document.querySelectorAll(".nav-tab").forEach(function(t){ t.classList.remove("active"); });
+      document.querySelectorAll(".screen").forEach(function(s){ s.classList.remove("active"); });
+      tab.classList.add("active");
+      var screenId = "screen-" + tab.dataset.screen;
+      var targetScreen = document.getElementById(screenId);
+      if(targetScreen) targetScreen.classList.add("active");
+    });
+  });
+
+  // Botão Sair (já existe, mas vamos garantir)
+  var logoutBtn = document.getElementById("logout-btn");
+  if(logoutBtn) logoutBtn.addEventListener("click", handleLogout);
+     
+      // Navegação das abas
+  document.querySelectorAll(".nav-tab").forEach(function(tab){
+    tab.addEventListener("click", function(){
+      // Remove active de todas as abas
+      document.querySelectorAll(".nav-tab").forEach(function(t){ 
+        t.classList.remove("active"); 
+      });
+      // Remove active de todas as telas
+      document.querySelectorAll(".screen").forEach(function(s){ 
+        s.classList.remove("active"); 
+      });
+      // Adiciona active na aba clicada
+      tab.classList.add("active");
+      // Mostra a tela correspondente
+      var screenId = "screen-" + tab.dataset.screen;
+      var targetScreen = document.getElementById(screenId);
+      if(targetScreen) targetScreen.classList.add("active");
+    });
+  });  
+}
 
     function togglePassVisibility(inputId, btn){
       var inp = document.getElementById(inputId);
