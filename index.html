@@ -12,7 +12,7 @@
     :root{
       --bg-primary:#23272D;
       --bg-card:#2F353D;
-      --bg-card-hi:#3A414A;
+      --bg-card-hi:#3A414A; 
       --line:#454E58;
       --teal-deep:#0F4C5C;
       --teal:#1B6B7A;
@@ -631,71 +631,75 @@ function renderMaintenance(){
       '</div>';
     }
 
-    // ---------- Handlers ----------
     function attachHandlers(){
-      var loginForm = document.getElementById("login-form");
-      if(loginForm) loginForm.addEventListener("submit", handleLogin);
+  // ===== HANDLERS EXISTENTES =====
+  var loginForm = document.getElementById("login-form");
+  if(loginForm) loginForm.addEventListener("submit", handleLogin);
 
-      var toggleLoginPass = document.getElementById("toggle-login-pass");
-      if(toggleLoginPass) toggleLoginPass.addEventListener("click", function(){ togglePassVisibility("login-pass", toggleLoginPass); });
+  var toggleLoginPass = document.getElementById("toggle-login-pass");
+  if(toggleLoginPass) toggleLoginPass.addEventListener("click", function(){ 
+    togglePassVisibility("login-pass", toggleLoginPass); 
+  });
 
-      var openGate = document.getElementById("open-admin-gate");
-      if(openGate) openGate.addEventListener("click", function(){ state.screen = "adminGate"; state.error = ""; render(); });
+  var openGate = document.getElementById("open-admin-gate");
+  if(openGate) openGate.addEventListener("click", function(){ 
+    state.screen = "adminGate"; 
+    state.error = ""; 
+    render(); 
+  });
 
-      var adminGateForm = document.getElementById("admin-gate-form");
-      if(adminGateForm) adminGateForm.addEventListener("submit", handleAdminGate);
+  var adminGateForm = document.getElementById("admin-gate-form");
+  if(adminGateForm) adminGateForm.addEventListener("submit", handleAdminGate);
 
-      var toggleAdminPass = document.getElementById("toggle-admin-pass");
-      if(toggleAdminPass) toggleAdminPass.addEventListener("click", function(){ togglePassVisibility("admin-pass", toggleAdminPass); });
+  var toggleAdminPass = document.getElementById("toggle-admin-pass");
+  if(toggleAdminPass) toggleAdminPass.addEventListener("click", function(){ 
+    togglePassVisibility("admin-pass", toggleAdminPass); 
+  });
 
-      var cancelGate = document.getElementById("cancel-admin-gate");
-      if(cancelGate) cancelGate.addEventListener("click", function(){ state.screen = "login"; state.error = ""; render(); });
+  var cancelGate = document.getElementById("cancel-admin-gate");
+  if(cancelGate) cancelGate.addEventListener("click", function(){ 
+    state.screen = "login"; 
+    state.error = ""; 
+    render(); 
+  });
 
-      var createUserForm = document.getElementById("create-user-form");
-      if(createUserForm){
-        createUserForm.addEventListener("submit", handleCreateUser);
-        var cpfInput = document.getElementById("new-cpf");
-        if(cpfInput){
-          cpfInput.addEventListener("input", function(e){ e.target.value = formatCPF(e.target.value); });
-        }
-      }
-
-      var copyCred = document.getElementById("copy-cred");
-      if(copyCred) copyCred.addEventListener("click", handleCopyCred);
-
-      var changePassForm = document.getElementById("change-pass-form");
-      if(changePassForm) changePassForm.addEventListener("submit", handleChangePass);
-
-      var logoutBtn = document.getElementById("logout-btn");
-      if(logoutBtn) logoutBtn.addEventListener("click", handleLogout);
-      var logoutBtn2 = document.getElementById("logout-btn-2");
-      if(logoutBtn2) logoutBtn2.addEventListener("click", handleLogout);
-
-      document.querySelectorAll("[data-action]").forEach(function(btn){
-        btn.addEventListener("click", function(){
-          var act = btn.getAttribute("data-action");
-          var u = btn.getAttribute("data-username");
-          if(act === "reset") handleResetUserPass(u);
-          else if(act === "toggle") handleToggleUserStatus(u);
-        });
+  var createUserForm = document.getElementById("create-user-form");
+  if(createUserForm){
+    createUserForm.addEventListener("submit", handleCreateUser);
+    var cpfInput = document.getElementById("new-cpf");
+    if(cpfInput){
+      cpfInput.addEventListener("input", function(e){ 
+        e.target.value = formatCPF(e.target.value); 
       });
-      // Navegação por abas
-  document.querySelectorAll(".nav-tab").forEach(function(tab){
-    tab.addEventListener("click", function(){
-      document.querySelectorAll(".nav-tab").forEach(function(t){ t.classList.remove("active"); });
-      document.querySelectorAll(".screen").forEach(function(s){ s.classList.remove("active"); });
-      tab.classList.add("active");
-      var screenId = "screen-" + tab.dataset.screen;
-      var targetScreen = document.getElementById(screenId);
-      if(targetScreen) targetScreen.classList.add("active");
+    }
+  }
+
+  var copyCred = document.getElementById("copy-cred");
+  if(copyCred) copyCred.addEventListener("click", handleCopyCred);
+
+  var changePassForm = document.getElementById("change-pass-form");
+  if(changePassForm) changePassForm.addEventListener("submit", handleChangePass);
+
+  // Botão Sair - UMA VEZ SÓ
+  var logoutBtn = document.getElementById("logout-btn");
+  if(logoutBtn) logoutBtn.addEventListener("click", handleLogout);
+  
+  var logoutBtn2 = document.getElementById("logout-btn-2");
+  if(logoutBtn2) logoutBtn2.addEventListener("click", handleLogout);
+
+  // Handlers dos botões de ação (reset e toggle)
+  document.querySelectorAll("[data-action]").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var act = btn.getAttribute("data-action");
+      var u = btn.getAttribute("data-username");
+      if(act === "reset") handleResetUserPass(u);
+      else if(act === "toggle") handleToggleUserStatus(u);
     });
   });
 
-  // Botão Sair (já existe, mas vamos garantir)
-  var logoutBtn = document.getElementById("logout-btn");
-  if(logoutBtn) logoutBtn.addEventListener("click", handleLogout);
-     
-      // Navegação das abas
+  // ===== NOVOS HANDLERS PARA O PAINEL (APENAS UMA VEZ) =====
+  
+  // Navegação das abas
   document.querySelectorAll(".nav-tab").forEach(function(tab){
     tab.addEventListener("click", function(){
       // Remove active de todas as abas
@@ -713,7 +717,7 @@ function renderMaintenance(){
       var targetScreen = document.getElementById(screenId);
       if(targetScreen) targetScreen.classList.add("active");
     });
-  });  
+  });
 }
 
     function togglePassVisibility(inputId, btn){
