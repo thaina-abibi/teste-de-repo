@@ -50,7 +50,13 @@
 
     .center-wrap{flex:1; display:flex; align-items:center; justify-content:center; padding:32px 20px;}
     .brand{display:flex; align-items:center; gap:14px; justify-content:center; margin-bottom:6px;}
-    .brand-mark{width:46px; height:46px; flex-shrink:0;}
+    .brand-mark{
+  width: 46px;
+  height: 46px;
+  flex-shrink: 0;
+  border-radius: 12px; /* Controla o quanto as bordas ficam arredondadas */
+  object-fit: cover;    /* Garante que a imagem preencha o espaço sem distorcer */
+}
     .brand-text{text-align:left;}
     .brand-title{font-family:var(--font-display); font-weight:700; font-size:26px; letter-spacing:0.5px; color:var(--cream); line-height:1;}
     .brand-sub{font-family:var(--font-mono); font-size:10.5px; letter-spacing:2.5px; text-transform:uppercase; color:var(--mint); margin-top:4px;}
@@ -290,15 +296,9 @@
     var app = document.getElementById("app");
 
     function logoSVG(size){
-      size = size || 46;
-      return '<svg class="brand-mark" viewBox="0 0 100 100" width="'+size+'" height="'+size+'" xmlns="http://www.w3.org/2000/svg">' +
-        '<path d="M20 12 H50 C68 12 80 26 80 50 C80 74 68 88 50 88 H20 V64 H48 C56 64 60 58 60 50 C60 42 56 36 48 36 H20 Z" fill="none" stroke="var(--amber)" stroke-width="7" stroke-linejoin="round"/>' +
-        '<circle cx="34" cy="60" r="9" fill="none" stroke="var(--amber)" stroke-width="6"/>' +
-        '<circle cx="60" cy="60" r="9" fill="none" stroke="var(--amber)" stroke-width="6"/>' +
-        '<path d="M34 60 L48 42 L58 42 L50 52 L60 60" fill="none" stroke="var(--amber)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>' +
-        '<path d="M46 40 Q50 32 58 34" fill="none" stroke="var(--amber)" stroke-width="6" stroke-linecap="round"/>' +
-        '</svg>';
-    }
+  size = size || 46;
+  return '<img src="favicon.png" class="brand-mark" style="width:'+size+'px; height:'+size+'px;" alt="Logo">';
+}
 
     function eyeSVG(open){
       if(open){
