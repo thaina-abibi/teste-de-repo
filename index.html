@@ -1,900 +1,636 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-  <head>
-<link rel="icon" type="image/png" href="favicon.png">
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SAC DETRAN</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-  <style>
-    :root{
-      --bg-primary:#23272D;
-      --bg-card:#2F353D;
-      --bg-card-hi:#3A414A; 
-      --line:#454E58;
-      --teal-deep:#0F4C5C;
-      --teal:#1B6B7A;
-      --mint:#8BC4B9;
-      --amber:#F2C14E;
-      --amber-hi:#F7D77A;
-      --amber-dim:#B08A2F;
-      --cream:#FFF4D6;
-      --offwhite:#F2F7F6;
-      --slate:#8C97A1;
-      --bluegray:#9AA5B1;
-      --danger:#C1666B;
-      --danger-hi:#D98488;
-      --font-display:'Rajdhani',sans-serif;
-      --font-body:'Inter',sans-serif;
-      --font-mono:'JetBrains Mono',monospace;
-    }
-    *{box-sizing:border-box;}
-    html,body{height:100%;}
-    body{
-      margin:0;
-      font-family:var(--font-body);
-      background:var(--bg-primary);
-      color:var(--offwhite);
-      min-height:100vh;
-      position:relative;
-      overflow-x:hidden;
-    }
-    #bg-layer{
-      position:fixed; inset:0; z-index:0;
-      background: radial-gradient(1100px 700px at 82% 8%, rgba(27,107,122,0.55), transparent 60%), radial-gradient(900px 600px at 100% 100%, rgba(15,76,92,0.6), transparent 55%), var(--bg-primary);
-    }
-    #bg-lines{position:fixed; inset:0; z-index:0; opacity:0.16; pointer-events:none;}
-    #app{position:relative; z-index:1; min-height:100vh; display:flex; flex-direction:column;}
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SAC DETRAN — Colaboradores</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-primary:#23272D;
+    --bg-card:#2F353D;
+    --bg-card-hi:#3A414A;
+    --line:#454E58;
+    --teal-deep:#0F4C5C;
+    --teal:#1B6B7A;
+    --mint:#8BC4B9;
+    --amber:#F2C14E;
+    --amber-hi:#F7D77A;
+    --amber-dim:#B08A2F;
+    --cream:#FFF4D6;
+    --offwhite:#F2F7F6;
+    --slate:#8C97A1;
+    --bluegray:#9AA5B1;
+    --danger:#C1666B;
+    --danger-hi:#D98488;
+    --font-display:'Rajdhani',sans-serif;
+    --font-body:'Inter',sans-serif;
+    --font-mono:'JetBrains Mono',monospace;
+  }
+  *{box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    margin:0; font-family:var(--font-body); color:var(--offwhite);
+    background:
+      radial-gradient(1100px 700px at 82% 8%, rgba(27,107,122,0.45), transparent 60%),
+      radial-gradient(900px 600px at 100% 100%, rgba(15,76,92,0.5), transparent 55%),
+      var(--bg-primary);
+    min-height:100vh;
+  }
+  .topbar{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 26px; border-bottom:1px solid var(--line); background:rgba(47,53,61,0.7);
+    backdrop-filter:blur(6px); position:sticky; top:0; z-index:10;
+  }
+  .brand{display:flex; align-items:center; gap:12px;}
+  .brand-mark{width:30px; height:30px; flex-shrink:0;}
+  .brand-title{font-family:var(--font-display); font-weight:700; font-size:17px; color:var(--cream); line-height:1;}
+  .brand-sub{font-family:var(--font-mono); font-size:8.5px; letter-spacing:2px; text-transform:uppercase; color:var(--mint); margin-top:3px;}
+  .logout-x{
+    background:none; border:1px solid var(--line); color:var(--bluegray); border-radius:7px;
+    padding:8px 14px; font-family:var(--font-body); font-size:12.5px; cursor:pointer;
+  }
+  .logout-x:hover{border-color:var(--amber); color:var(--amber-hi);}
 
-    .center-wrap{flex:1; display:flex; align-items:center; justify-content:center; padding:32px 20px;}
-    .brand{display:flex; align-items:center; gap:14px; justify-content:center; margin-bottom:6px;}
-    .brand-mark{
-  width: 46px;
-  height: 46px;
-  flex-shrink: 0;
-  border-radius: 25px; /* Controla o quanto as bordas ficam arredondadas */
-  object-fit: cover;    /* Garante que a imagem preencha o espaço sem distorcer */
-}
-    .brand-text{text-align:left;}
-    .brand-title{font-family:var(--font-display); font-weight:700; font-size:26px; letter-spacing:0.5px; color:var(--cream); line-height:1;}
-    .brand-sub{font-family:var(--font-mono); font-size:10.5px; letter-spacing:2.5px; text-transform:uppercase; color:var(--mint); margin-top:4px;}
+  .nav-tabs{display:flex; gap:8px; padding:14px 22px; max-width:980px; margin:0 auto; flex-wrap:wrap;}
+  .nav-tab{
+    display:flex; align-items:center; gap:8px; padding:10px 16px; border-radius:99px;
+    border:1px solid var(--line); background:var(--bg-card); color:var(--offwhite);
+    font-family:var(--font-body); font-size:13.5px; font-weight:500; cursor:pointer;
+    transition:border-color .15s, color .15s, background .15s;
+  }
+  .nav-tab svg{width:17px; height:17px; flex-shrink:0;}
+  .nav-tab:hover{border-color:var(--mint); color:var(--mint);}
+  .nav-tab.active{background:rgba(242,193,78,0.14); border-color:var(--amber); color:var(--amber-hi);}
 
-    .card{
-      width:100%; max-width:420px;
-      background:var(--bg-card);
-      border:1px solid var(--line);
-      border-radius:14px;
-      padding:34px 32px 30px;
-      box-shadow:0 20px 60px rgba(0,0,0,0.35);
-      position:relative;
-      overflow:hidden;
-    }
-    .card::before{
-      content:""; position:absolute; top:0; left:0; right:0; height:3px;
-      background:linear-gradient(90deg, var(--teal-deep), var(--amber), var(--mint));
-    }
+  .content-wrap{max-width:980px; margin:0 auto; padding:6px 22px 60px;}
+  .screen{display:none;}
+  .screen.active{display:block;}
 
-    .route-svg{display:block; margin:18px auto 22px; width:100%; max-width:220px; height:14px;}
-    .route-svg path{
-      fill:none; stroke:var(--amber); stroke-width:2; stroke-linecap:round;
-      stroke-dasharray:260; stroke-dashoffset:260;
-      animation:drawroute 1.4s ease forwards 0.2s;
-    }
-    @keyframes drawroute{ to{ stroke-dashoffset:0; } }
+  .panel{background:var(--bg-card); border:1px solid var(--line); border-radius:12px; padding:24px; margin-bottom:22px;}
+  .section-title{font-family:var(--font-display); font-weight:700; font-size:18px; color:var(--cream); letter-spacing:0.3px; margin:0 0 4px;}
+  .section-sub{color:var(--bluegray); font-size:12.5px; margin:0 0 16px;}
 
-    .field{margin-bottom:16px;}
-    .field label{display:block; font-family:var(--font-mono); font-size:11px; letter-spacing:1.2px; text-transform:uppercase; color:var(--bluegray); margin-bottom:7px;}
-    .input-row{position:relative;}
-    input[type="text"], input[type="password"]{
-      width:100%; padding:12px 14px; border-radius:8px;
-      border:1px solid var(--line); background:var(--bg-primary); color:var(--offwhite);
-      font-family:var(--font-body); font-size:14.5px; outline:none;
-      transition:border-color .15s, box-shadow .15s;
-    }
-    input[type="text"]:focus, input[type="password"]:focus{
-      border-color:var(--amber); box-shadow:0 0 0 3px rgba(242,193,78,0.18);
-    }
-    .toggle-eye{
-      position:absolute; right:10px; top:50%; transform:translateY(-50%);
-      background:none; border:none; cursor:pointer; padding:6px; color:var(--slate);
-      display:flex; align-items:center;
-    }
-    .toggle-eye:hover{color:var(--mint);}
-    .toggle-eye:focus-visible, button:focus-visible, .link-btn:focus-visible{
-      outline:2px solid var(--amber); outline-offset:2px;
-    }
+  /* ---- Cards por célula ---- */
+  .celula-group{margin-bottom:24px;}
+  .celula-heading{
+    display:flex; align-items:center; gap:10px; font-family:var(--font-display); font-weight:700;
+    font-size:15px; color:var(--amber-hi); letter-spacing:0.5px; text-transform:uppercase; margin-bottom:10px;
+  }
+  .celula-heading .count{
+    font-family:var(--font-mono); font-size:11px; color:var(--bluegray); background:var(--bg-primary);
+    border:1px solid var(--line); border-radius:100px; padding:2px 9px; text-transform:none; letter-spacing:0;
+  }
+  .colab-grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(240px,1fr)); gap:12px;}
+  .colab-card{
+    display:flex; gap:12px; align-items:center; background:var(--bg-primary); border:1px solid var(--line);
+    border-radius:10px; padding:12px;
+  }
+  .colab-photo{
+    width:48px; height:48px; border-radius:50%; object-fit:cover; flex-shrink:0;
+    background:var(--bg-card-hi); border:1px solid var(--line);
+  }
+  .colab-photo-placeholder{
+    width:48px; height:48px; border-radius:50%; flex-shrink:0; background:var(--bg-card-hi);
+    border:1px solid var(--line); display:flex; align-items:center; justify-content:center; color:var(--slate);
+    font-family:var(--font-display); font-weight:700; font-size:16px;
+  }
+  .colab-info{min-width:0; flex:1;}
+  .colab-nome{font-size:13.5px; font-weight:600; color:var(--offwhite); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .colab-cargo{font-size:11.5px; color:var(--bluegray); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .colab-detalhe{font-size:10.5px; color:var(--mint); font-family:var(--font-mono); margin-top:2px;}
+  .empty-state{text-align:center; color:var(--bluegray); padding:40px 10px; font-size:13.5px;}
 
-    .btn{
-      width:100%; padding:12px 16px; border-radius:8px; border:none; cursor:pointer;
-      font-family:var(--font-display); font-weight:700; font-size:15.5px; letter-spacing:0.4px;
-      transition:transform .1s, filter .15s; margin-top:4px;
-    }
-    .btn:active{transform:scale(0.985);}
-    .btn-primary{background:var(--amber); color:#2A2106;}
-    .btn-primary:hover{filter:brightness(1.08);}
-    .btn-primary:disabled{opacity:0.5; cursor:not-allowed; filter:none;}
-    .btn-secondary{background:transparent; border:1px solid var(--line); color:var(--offwhite);}
-    .btn-secondary:hover{border-color:var(--mint); color:var(--mint);}
-    .btn-danger-outline{background:transparent; border:1px solid var(--danger); color:var(--danger-hi);}
-    .btn-danger-outline:hover{background:rgba(193,102,107,0.12);}
-    .btn-ghost-teal{background:rgba(139,196,185,0.12); border:1px solid rgba(139,196,185,0.35); color:var(--mint);}
-    .btn-ghost-teal:hover{background:rgba(139,196,185,0.2);}
-    .btn-sm{width:auto; padding:7px 12px; font-size:12.5px;}
+  /* ---- Formulário ---- */
+  .field{margin-bottom:15px;}
+  .field label{display:block; font-family:var(--font-mono); font-size:10.5px; letter-spacing:1.1px; text-transform:uppercase; color:var(--bluegray); margin-bottom:6px;}
+  input[type="text"], input[type="email"], input[type="date"], input[type="time"], input[type="file"], select, textarea{
+    width:100%; padding:11px 13px; border-radius:8px; border:1px solid var(--line);
+    background:var(--bg-primary); color:var(--offwhite); font-family:var(--font-body); font-size:14px; outline:none;
+    transition:border-color .15s, box-shadow .15s;
+  }
+  input:focus, select:focus{ border-color:var(--amber); box-shadow:0 0 0 3px rgba(242,193,78,0.18); }
+  input[readonly]{ color:var(--mint); background:var(--bg-card-hi); cursor:not-allowed; }
+  select{ appearance:none; background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%239AA5B1' stroke-width='2'><polyline points='6 9 12 15 18 9'/></svg>"); background-repeat:no-repeat; background-position:right 12px center; padding-right:34px; }
 
-    .link-btn{
-      background:none; border:none; color:var(--mint); font-family:var(--font-body);
-      font-size:13px; cursor:pointer; text-decoration:underline; text-underline-offset:3px; padding:4px;
-    }
-    .link-btn:hover{color:var(--amber-hi);}
-    .center-link{display:flex; justify-content:center; margin-top:18px;}
+  .grid-2{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  .grid-3{display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px;}
+  @media (max-width:640px){ .grid-2, .grid-3{grid-template-columns:1fr;} }
 
-    .error-box{
-      background:rgba(193,102,107,0.14); border:1px solid rgba(193,102,107,0.4);
-      color:var(--danger-hi); font-size:13px; padding:10px 12px; border-radius:8px; margin-bottom:16px;
-    }
-    .modal-overlay{
-      position:fixed; inset:0; background:rgba(15,18,21,0.72); backdrop-filter:blur(2px);
-      display:flex; align-items:center; justify-content:center; z-index:50; padding:20px;
-    }
+  .photo-upload{display:flex; align-items:center; gap:16px; margin-bottom:18px;}
+  .photo-preview{
+    width:72px; height:72px; border-radius:50%; object-fit:cover; background:var(--bg-primary);
+    border:1px solid var(--line); flex-shrink:0;
+  }
+  .photo-preview-placeholder{
+    width:72px; height:72px; border-radius:50%; background:var(--bg-primary); border:1px dashed var(--line);
+    display:flex; align-items:center; justify-content:center; color:var(--slate); flex-shrink:0; font-size:12px;
+  }
 
-    .topbar{
-      display:flex; align-items:center; justify-content:space-between; padding:16px 26px;
-      border-bottom:1px solid var(--line); background:rgba(47,53,61,0.7); backdrop-filter:blur(6px);
-      position:sticky; top:0; z-index:10;
-    }
-    .topbar .brand{margin-bottom:0;}
-    .topbar .brand-mark{width:32px; height:32px;}
-    .topbar .brand-title{font-size:18px;}
-    .topbar .brand-sub{font-size:9px;}
+  .divider-note{
+    display:flex; align-items:center; gap:10px; margin:24px 0 14px; color:var(--slate); font-size:10.5px;
+    font-family:var(--font-mono); text-transform:uppercase; letter-spacing:1.2px;
+  }
+  .divider-note::before, .divider-note::after{content:""; flex:1; height:1px; background:var(--line);}
 
-    .dash-wrap{max-width:920px; margin:0 auto; padding:30px 22px 60px; width:100%;}
-    .section-title{font-family:var(--font-display); font-weight:700; font-size:19px; color:var(--cream); letter-spacing:0.3px; margin:0 0 4px;}
-    .section-sub{color:var(--bluegray); font-size:13px; margin:0 0 18px;}
-    .panel{background:var(--bg-card); border:1px solid var(--line); border-radius:12px; padding:24px; margin-bottom:26px;}
-    .grid-2{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
-    @media (max-width:560px){ .grid-2{grid-template-columns:1fr;} }
+  .ferias-row{display:grid; grid-template-columns:1fr 1fr auto; gap:10px; align-items:end; margin-bottom:10px;}
+  .remove-ferias{
+    background:none; border:1px solid var(--danger); color:var(--danger-hi); border-radius:8px;
+    padding:11px 12px; cursor:pointer; font-size:12px; height:41px;
+  }
+  .remove-ferias:hover{background:rgba(193,102,107,0.12);}
 
-    .credential-result{
-      background:var(--bg-primary); border:1px dashed var(--amber-dim); border-radius:10px;
-      padding:16px 18px; margin-top:16px;
-    }
-    .cred-row{display:flex; align-items:center; justify-content:space-between; padding:6px 0;}
-    .cred-label{font-family:var(--font-mono); font-size:10.5px; text-transform:uppercase; letter-spacing:1px; color:var(--bluegray);}
-    .cred-value{font-family:var(--font-mono); font-size:15px; color:var(--amber-hi); font-weight:600;}
-    .copy-btn{
-      background:none; border:1px solid var(--line); color:var(--slate); border-radius:6px;
-      padding:4px 9px; font-size:11px; cursor:pointer; font-family:var(--font-mono);
-    }
-    .copy-btn:hover{color:var(--mint); border-color:var(--mint);}
+  .btn{padding:11px 18px; border-radius:8px; border:none; cursor:pointer; font-family:var(--font-display); font-weight:700; font-size:14.5px; letter-spacing:0.3px; transition:filter .15s, transform .1s;}
+  .btn:active{transform:scale(0.985);}
+  .btn-primary{background:var(--amber); color:#2A2106;}
+  .btn-primary:hover{filter:brightness(1.08);}
+  .btn-secondary{background:transparent; border:1px solid var(--line); color:var(--offwhite);}
+  .btn-secondary:hover{border-color:var(--mint); color:var(--mint);}
+  .btn-ghost-teal{background:rgba(139,196,185,0.12); border:1px solid rgba(139,196,185,0.35); color:var(--mint); font-family:var(--font-body); font-weight:600; font-size:13px; padding:9px 14px; border-radius:8px; cursor:pointer;}
+  .btn-ghost-teal:hover{background:rgba(139,196,185,0.2);}
+  .btn-danger-outline{background:transparent; border:1px solid var(--danger); color:var(--danger-hi); font-family:var(--font-body); font-weight:600; font-size:13px; padding:9px 14px; border-radius:8px; cursor:pointer;}
+  .btn-danger-outline:hover{background:rgba(193,102,107,0.12);}
 
-    table{width:100%; border-collapse:collapse; margin-top:6px;}
-    thead th{
-      text-align:left; font-family:var(--font-mono); font-size:10.5px; text-transform:uppercase;
-      letter-spacing:1px; color:var(--bluegray); padding:10px 10px; border-bottom:1px solid var(--line);
-    }
-    tbody td{padding:12px 10px; border-bottom:1px solid var(--line); font-size:13.5px; vertical-align:middle;}
-    tbody tr:last-child td{border-bottom:none;}
-    .user-cpf{font-family:var(--font-mono); color:var(--bluegray); font-size:12.5px;}
+  .form-actions{display:flex; gap:10px; margin-top:22px; flex-wrap:wrap; align-items:center;}
 
-    .badge{
-      display:inline-flex; align-items:center; gap:5px; padding:3px 10px; border-radius:100px;
-      font-family:var(--font-mono); font-size:10.5px; text-transform:uppercase; letter-spacing:0.8px;
-    }
-    .badge-active{background:rgba(139,196,185,0.15); color:var(--mint); border:1px solid rgba(139,196,185,0.35);}
-    .badge-inactive{background:rgba(193,102,107,0.15); color:var(--danger-hi); border:1px solid rgba(193,102,107,0.35);}
-    .badge-temp{background:rgba(242,193,78,0.15); color:var(--amber-hi); border:1px solid rgba(242,193,78,0.35); margin-left:6px;}
+  .success-box{background:rgba(139,196,185,0.14); border:1px solid rgba(139,196,185,0.4); color:var(--mint); font-size:13px; padding:10px 12px; border-radius:8px; margin-bottom:16px;}
+  .error-box{background:rgba(193,102,107,0.14); border:1px solid rgba(193,102,107,0.4); color:var(--danger-hi); font-size:13px; padding:10px 12px; border-radius:8px; margin-bottom:16px;}
 
-    .row-actions{display:flex; gap:8px; flex-wrap:wrap;}
-    .empty-state{text-align:center; color:var(--bluegray); padding:30px 10px; font-size:13.5px;}
+  .badge{display:inline-flex; align-items:center; gap:5px; padding:3px 10px; border-radius:100px; font-family:var(--font-mono); font-size:10px; text-transform:uppercase; letter-spacing:0.7px; margin-left:8px;}
+  .badge-active{background:rgba(139,196,185,0.15); color:var(--mint); border:1px solid rgba(139,196,185,0.35);}
+  .badge-inactive{background:rgba(193,102,107,0.15); color:var(--danger-hi); border:1px solid rgba(193,102,107,0.35);}
 
-    .maint-icon{width:64px; height:64px; margin:0 auto 20px; display:block;}
-    .maint-title{font-family:var(--font-display); font-weight:700; font-size:24px; color:var(--cream); margin:0 0 10px;}
-    .maint-text{color:var(--bluegray); font-size:14px; line-height:1.6; margin:0 0 26px;}
-
-    .loading-wrap{display:flex; align-items:center; justify-content:center; min-height:100vh; color:var(--bluegray); font-family:var(--font-mono); font-size:13px;}
-    .spinner{
-      width:18px; height:18px; border-radius:50%; border:2px solid var(--line);
-      border-top-color:var(--amber); animation:spin 0.8s linear infinite; margin-right:10px;
-    }
-    @keyframes spin{ to{ transform:rotate(360deg); } }
-
-    .toast{
-      position:fixed; bottom:24px; left:50%; transform:translateX(-50%);
-      background:var(--bg-card-hi); border:1px solid var(--line); color:var(--offwhite);
-      padding:12px 20px; border-radius:9px; font-size:13.5px; z-index:100;
-      box-shadow:0 10px 30px rgba(0,0,0,0.4); animation:toastin .2s ease;
-    }
-    @keyframes toastin{ from{opacity:0; transform:translate(-50%,8px);} to{opacity:1; transform:translate(-50%,0);} }
-    .hint{font-size:11.5px; color:var(--slate); margin-top:6px;}
-
-    .logout-x{
-      background:none; border:1px solid var(--line); color:var(--bluegray); border-radius:7px;
-      padding:8px 14px; font-family:var(--font-body); font-size:12.5px; cursor:pointer;
-    }
-    .logout-x:hover{border-color:var(--danger); color:var(--danger-hi);}
-    /* ====== ESTILOS DO PAINEL (adicione isso ao CSS existente) ====== */
-
-.nav-tabs{
-  display:flex; gap:8px; padding:14px 22px; max-width:920px; margin:0 auto;
-  flex-wrap:wrap;
-}
-.nav-tab{
-  display:flex; align-items:center; gap:8px; padding:10px 16px; border-radius:9px;
-  border:1px solid var(--line); background:var(--bg-card); color:var(--offwhite);
-  font-family:var(--font-body); font-size:13.5px; font-weight:500; cursor:pointer;
-  transition:border-color .15s, color .15s, background .15s;
-}
-.nav-tab svg{width:17px; height:17px; flex-shrink:0;}
-.nav-tab:hover{border-color:var(--mint); color:var(--mint);}
-.nav-tab.active{
-  background:rgba(242,193,78,0.14); border-color:var(--amber); color:var(--amber-hi);
-}
-
-.content-wrap{max-width:920px; margin:0 auto; padding:6px 22px 60px;}
-.screen{display:none;}
-.screen.active{display:block;}
-
-.maintenance-card{
-  background:var(--bg-card); border:1px solid var(--line); border-radius:12px;
-  padding:50px 30px; text-align:center; margin-top:14px;
-}
-.maint-icon{width:56px; height:56px; margin:0 auto 18px; display:block;}
-.maint-title{font-family:var(--font-display); font-weight:700; font-size:21px; color:var(--cream); margin:0 0 8px;}
-.maint-text{color:var(--bluegray); font-size:13.5px; line-height:1.6; margin:0;}
-  </style>
+  .toast{
+    position:fixed; bottom:24px; left:50%; transform:translateX(-50%);
+    background:var(--bg-card-hi); border:1px solid var(--line); color:var(--offwhite);
+    padding:12px 20px; border-radius:9px; font-size:13.5px; z-index:100; box-shadow:0 10px 30px rgba(0,0,0,0.4);
+  }
+</style>
 </head>
 <body>
-  <div id="bg-layer"></div>
-  <svg id="bg-lines" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice">
-    <g stroke="var(--mint)" stroke-width="1" fill="none">
-      <path d="M -50 700 L 300 350 L 600 500 L 950 100 L 1300 250"/>
-      <path d="M -50 500 L 250 600 L 500 300 L 800 450 L 1250 50"/>
-      <path d="M -100 150 L 350 250 L 700 50 L 1000 300 L 1300 150"/>
-      <circle cx="880" cy="120" r="60"/>
-      <circle cx="880" cy="120" r="110"/>
-      <circle cx="200" cy="620" r="50"/>
-    </g>
-  </svg>
 
-  <div id="app"><div class="loading-wrap"><span class="spinner"></span>Carregando…</div></div>
+<div class="topbar">
+  <div class="brand">
+    <svg class="brand-mark" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <path d="M20 12 H50 C68 12 80 26 80 50 C80 74 68 88 50 88 H20 V64 H48 C56 64 60 58 60 50 C60 42 56 36 48 36 H20 Z" fill="none" stroke="var(--amber)" stroke-width="7" stroke-linejoin="round"/>
+      <circle cx="34" cy="60" r="9" fill="none" stroke="var(--amber)" stroke-width="6"/>
+      <circle cx="60" cy="60" r="9" fill="none" stroke="var(--amber)" stroke-width="6"/>
+      <path d="M34 60 L48 42 L58 42 L50 52 L60 60" fill="none" stroke="var(--amber)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M46 40 Q50 32 58 34" fill="none" stroke="var(--amber)" stroke-width="6" stroke-linecap="round"/>
+    </svg>
+    <div>
+      <div class="brand-title">SAC DETRAN</div>
+      <div class="brand-sub">Painel do usuário</div>
+    </div>
+  </div>
+  <button class="logout-x" id="logout-btn">Sair</button>
+</div>
 
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<div class="nav-tabs">
+  <button class="nav-tab active" data-screen="inicio">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v9a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1v-9"/></svg>
+    Início
+  </button>
+  <button class="nav-tab" data-screen="adicionar">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="16" y1="11" x2="22" y2="11"/></svg>
+    Adicionar colaborador
+  </button>
+  <button class="nav-tab" data-screen="editar">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+    Editar colaborador
+  </button>
+</div>
 
-  <script>
-  (function(){
-    "use strict";
+<div class="content-wrap">
 
-    // Insira as credenciais do seu projeto Firebase aqui:
-    var firebaseConfig = {
-      databaseURL: "https://sac-detran-default-rtdb.firebaseio.com/"
-    };
+  <!-- INÍCIO -->
+  <section class="screen active" id="screen-inicio">
+    <div class="panel">
+      <div class="section-title">Quadro de Colaboradores</div>
+      <div class="section-sub">Acompanhe a distribuição de colaboradores cadastrados por célula.</div>
+      <div id="inicio-content"></div>
+    </div>
+  </section>
 
-    var db = null;
-    if(typeof firebase !== "undefined" && firebaseConfig.databaseURL.indexOf("SEU-PROJETO") === -1){
-      firebase.initializeApp(firebaseConfig);
-      db = firebase.database();
+  <!-- ADICIONAR COLABORADOR -->
+  <section class="screen" id="screen-adicionar">
+    <div class="panel">
+      <div class="section-title">Adicionar colaborador</div>
+      <div class="section-sub">Preencha os dados abaixo para cadastrar um novo colaborador.</div>
+      <div id="add-feedback"></div>
+      <form id="add-form"></form>
+    </div>
+  </section>
+
+  <!-- EDITAR COLABORADOR -->
+  <section class="screen" id="screen-editar">
+    <div class="panel">
+      <div class="section-title">Editar colaborador</div>
+      <div class="section-sub">Selecione um colaborador já cadastrado para editar os dados, ativar ou inativar o perfil.</div>
+      <div class="field">
+        <label for="edit-select">Colaborador</label>
+        <select id="edit-select">
+          <option value="">Selecione um colaborador…</option>
+        </select>
+      </div>
+      <div id="edit-feedback"></div>
+      <div id="edit-form-wrap"></div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var REGIOES = {
+    "Araçatuba":[{"localidade":"Araçatuba","ra":"1ª RA"},{"localidade":"Andradina","ra":"2ª RA"},{"localidade":"Birigui","ra":"3ª RA"}],
+    "Araraquara":[{"localidade":"Araraquara","ra":"4ª RA"},{"localidade":"Rio Claro","ra":"5ª RA"},{"localidade":"Taquaritinga","ra":"6ª RA"}],
+    "Bauru":[{"localidade":"Bauru","ra":"7ª RA"},{"localidade":"Marília","ra":"8ª RA"},{"localidade":"Ourinhos","ra":"9ª RA"}],
+    "Campinas":[{"localidade":"Campinas","ra":"10ª RA"},{"localidade":"Limeira","ra":"11ª RA"},{"localidade":"Mogi Guaçu","ra":"12ª RA"}],
+    "Fernandópolis":[{"localidade":"Fernandópolis","ra":"13ª RA"},{"localidade":"Jales","ra":"14ª RA"},{"localidade":"Votuporanga","ra":"15ª RA"}],
+    "Franca":[{"localidade":"Franca","ra":"16ª RA"},{"localidade":"São Joaquim da Barra","ra":"17ª RA"},{"localidade":"Barretos","ra":"18ª RA"}],
+    "Guarulhos":[{"localidade":"Guarulhos","ra":"19ª RA"},{"localidade":"Franco da Rocha","ra":"20ª RA"},{"localidade":"Mogi das Cruzes","ra":"21ª RA"}],
+    "Itapeva":[{"localidade":"Itapeva","ra":"22ª RA"},{"localidade":"Apiaí","ra":"23ª RA"},{"localidade":"Piraju","ra":"24ª RA"}],
+    "Jundiaí":[{"localidade":"Jundiaí","ra":"25ª RA"},{"localidade":"Atibaia","ra":"26ª RA"},{"localidade":"Amparo","ra":"27ª RA"}],
+    "Osasco":[{"localidade":"Osasco","ra":"28ª RA"},{"localidade":"Cotia","ra":"29ª RA"},{"localidade":"Santana de Parnaíba","ra":"30ª RA"}]
+  };
+
+  var CELULAS = [
+    "Célula Exame Prático", "Célula Exame Teórico", "Célula Médico e Psicológico",
+    "Célula CFC", "Célula PPD, ACC e CNH Definitiva", "Célula Adição e Mudança de Categoria",
+    "Célula Renovação de CNH", "Célula Segunda Via de CNH", "Célula PID",
+    "Célula Transferência de CNH", "Célula Alteração de Dados da CNH",
+    "Célula Condutor Infrator e Suspensão", "Célula Reabilitação de CNH",
+    "Célula PCD e Isenções", "Célula Certidões e Prontuário", "Célula Suporte e Dúvidas Gerais"
+  ];
+
+  function getColaboradores() {
+    var data = localStorage.getItem("sac_detran_colaboradores");
+    return data ? JSON.parse(data) : [];
+  }
+
+  function saveColaboradores(list) {
+    localStorage.setItem("sac_detran_colaboradores", JSON.stringify(list));
+  }
+
+  function showToast(msg) {
+    var toast = document.createElement("div");
+    toast.className = "toast";
+    toast.textContent = msg;
+    document.body.appendChild(toast);
+    setTimeout(function(){ toast.remove(); }, 3000);
+  }
+
+  // ======= Navegação =======
+  var tabs = document.querySelectorAll(".nav-tab");
+  var screens = document.querySelectorAll(".screen");
+
+  tabs.forEach(function(tab) {
+    tab.addEventListener("click", function() {
+      var target = this.getAttribute("data-screen");
+      tabs.forEach(function(t){ t.classList.remove("active"); });
+      screens.forEach(function(s){ s.classList.remove("active"); });
+      
+      this.classList.add("active");
+      document.getElementById("screen-" + target).classList.add("active");
+
+      if (target === "inicio") renderInicio();
+      if (target === "editar") populateEditSelect();
+    });
+  });
+
+  // ======= Renderizar Tela Inicial =======
+  function renderInicio() {
+    var container = document.getElementById("inicio-content");
+    var list = getColaboradores();
+    
+    if (list.length === 0) {
+      container.innerHTML = '<div class="empty-state">Nenhum colaborador cadastrado até o momento.</div>';
+      return;
     }
 
-    var ADMIN_CODE = "SACDETRAN";
-    var ADMIN_PASS = "ADMINSAC";
+    var html = "";
+    CELULAS.forEach(function(celula) {
+      var colabsCelula = list.filter(function(c){ return c.celula === celula; });
+      if (colabsCelula.length > 0) {
+        html += '<div class="celula-group">';
+        html += '<div class="celula-heading">' + celula + ' <span class="count">' + colabsCelula.length + '</span></div>';
+        html += '<div class="colab-grid">';
+        
+        colabsCelula.forEach(function(c) {
+          var initials = c.nome ? c.nome.charAt(0).toUpperCase() : "?";
+          var photoEl = c.foto 
+            ? '<img src="' + c.foto + '" class="colab-photo" alt="' + c.nome + '">'
+            : '<div class="colab-photo-placeholder">' + initials + '</div>';
 
-    var state = {
-      booted: false,
-      users: [],
-      screen: "login",
-      currentUser: null,
-      isAdmin: false,
-      error: "",
-      lastCredential: null,
-      toast: null
-    };
+          var statusBadge = c.ativo !== false 
+            ? '<span class="badge badge-active">Ativo</span>' 
+            : '<span class="badge badge-inactive">Inativo</span>';
 
-    var app = document.getElementById("app");
-
-    function logoSVG(size){
-  size = size || 46;
-  return '<img src="favicon.png" class="brand-mark" style="width:'+size+'px; height:'+size+'px;" alt="Logo">';
-}
-
-    function eyeSVG(open){
-      if(open){
-        return '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z"/><circle cx="12" cy="12" r="3"/></svg>';
-      }
-      return '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 20c-7 0-11-8-11-8a20.6 20.6 0 0 1 5.06-6.06M9.9 4.24A10.6 10.6 0 0 1 12 4c7 0 11 8 11 8a20.7 20.7 0 0 1-3.22 4.44M14.12 14.12A3 3 0 1 1 9.88 9.88"/><line x1="1" y1="1" x2="23" y2="23"/></svg>';
-    }
-
-    function escapeHTML(s){
-      return String(s == null ? "" : s).replace(/[&<>"']/g, function(c){
-        return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];
-      });
-    }
-
-    function genPassword(){
-      var chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-      var out = "";
-      for(var i=0;i<8;i++){ out += chars[Math.floor(Math.random()*chars.length)]; }
-      return out;
-    }
-
-    function onlyDigits(v){ return (v||"").replace(/\D/g,""); }
-
-    function formatCPF(v){
-      var d = onlyDigits(v).slice(0,11);
-      var out = d;
-      if(d.length > 9) out = d.replace(/(\d{3})(\d{3})(\d{3})(\d{1,2})/, "$1.$2.$3-$4");
-      else if(d.length > 6) out = d.replace(/(\d{3})(\d{3})(\d{1,3})/, "$1.$2.$3");
-      else if(d.length > 3) out = d.replace(/(\d{3})(\d{1,3})/, "$1.$2");
-      return out;
-    }
-
-    function showToast(msg){
-      state.toast = msg;
-      render();
-      setTimeout(function(){
-        state.toast = null;
-        var t=document.getElementById("toast-el");
-        if(t) t.remove();
-      }, 2600);
-    }
-
-    // ---------- Conexão com Firebase em Tempo Real ----------
-    function syncUsers(){
-      if(db){
-        db.ref("users").on("value", function(snapshot){
-          var val = snapshot.val();
-          state.users = val ? Object.values(val) : [];
-          state.booted = true;
-          render();
+          html += '<div class="colab-card">' +
+            photoEl +
+            '<div class="colab-info">' +
+              '<div class="colab-nome">' + c.nome + statusBadge + '</div>' +
+              '<div class="colab-cargo">' + c.cargo + '</div>' +
+              (c.jornada ? '<div class="colab-detalhe">⏱ ' + c.jornada + '</div>' : '') +
+              (c.localidade ? '<div class="colab-detalhe">📍 ' + c.localidade + '</div>' : '') +
+            '</div>' +
+          '</div>';
         });
-      } else {
-        // Fallback para localStorage caso o Firebase não seja configurado ainda
-        try {
-          var data = localStorage.getItem("sac-users");
-          state.users = data ? JSON.parse(data) : [];
-        } catch(e){ state.users = []; }
-        state.booted = true;
-        render();
+
+        html += '</div></div>';
       }
+    });
+
+    container.innerHTML = html || '<div class="empty-state">Nenhum colaborador registrado.</div>';
+  }
+
+  // ======= Construir Campos do Formulário =======
+  function buildFormFields(prefix, data) {
+    data = data || {};
+    var feriasList = data.ferias || [];
+
+    var regionOptions = '<option value="">Selecione...</option>';
+    Object.keys(REGIOES).forEach(function(r){
+      var sel = data.regiao === r ? 'selected' : '';
+      regionOptions += '<option value="' + r + '" ' + sel + '>' + r + '</option>';
+    });
+
+    var celulaOptions = '<option value="">Selecione...</option>';
+    CELULAS.forEach(function(c){
+      var sel = data.celula === c ? 'selected' : '';
+      celulaOptions += '<option value="' + c + '" ' + sel + '>' + c + '</option>';
+    });
+
+    var photoMarkup = data.foto 
+      ? '<img src="' + data.foto + '" class="photo-preview" id="' + prefix + '-preview-img">'
+      : '<div class="photo-preview-placeholder" id="' + prefix + '-preview-placeholder">Foto</div>';
+
+    var statusMarkup = '';
+    if (prefix === 'edit') {
+      var isAtivo = data.ativo !== false;
+      statusMarkup = ' <span class="badge ' + (isAtivo ? 'badge-active' : 'badge-inactive') + '" id="edit-status-badge">' + (isAtivo ? 'Ativo' : 'Inativo') + '</span>';
     }
 
-    async function saveUsers(){
-      if(db){
-        try {
-          await db.ref("users").set(state.users);
-          return true;
-        } catch(e){
-          showToast("Erro ao salvar no servidor.");
-          return false;
+    return '' +
+      '<div class="photo-upload">' +
+        photoMarkup +
+        '<div>' +
+          '<label style="font-size:11px; color:var(--bluegray); font-family:var(--font-mono);">FOTO DO COLABORADOR' + statusMarkup + '</label>' +
+          '<input type="file" id="' + prefix + '-foto-file" accept="image/*">' +
+          '<input type="hidden" id="' + prefix + '-foto-base64" value="' + (data.foto || '') + '">' +
+        '</div>' +
+      '</div>' +
+      '<div class="grid-2">' +
+        '<div class="field"><label>Nome Completo</label><input type="text" id="' + prefix + '-nome" value="' + (data.nome || '') + '" required></div>' +
+        '<div class="field"><label>E-mail</label><input type="email" id="' + prefix + '-email" value="' + (data.email || '') + '" required></div>' +
+      '</div>' +
+      '<div class="grid-3">' +
+        '<div class="field"><label>Cargo</label><input type="text" id="' + prefix + '-cargo" value="' + (data.cargo || '') + '" required></div>' +
+        '<div class="field"><label>Célula</label><select id="' + prefix + '-celula" required>' + celulaOptions + '</select></div>' +
+        '<div class="field"><label>Jornada de Trabalho</label><input type="text" id="' + prefix + '-jornada" placeholder="Ex: 08:00 - 17:00" value="' + (data.jornada || '') + '"></div>' +
+      '</div>' +
+      '<div class="grid-3">' +
+        '<div class="field"><label>Região</label><select id="' + prefix + '-regiao">' + regionOptions + '</select></div>' +
+        '<div class="field"><label>Localidade</label><select id="' + prefix + '-localidade"><option value="">Selecione a Região...</option></select></div>' +
+        '<div class="field"><label>Região Administrativa (RA)</label><input type="text" id="' + prefix + '-ra" value="' + (data.ra || '') + '" readonly></div>' +
+      '</div>' +
+      '<div class="divider-note">Períodos de Férias</div>' +
+      '<div id="' + prefix + '-ferias-container"></div>' +
+      '<button type="button" class="btn-ghost-teal" id="' + prefix + '-add-ferias" style="margin-bottom:20px;">+ Adicionar período de férias</button>' +
+      '<div class="form-actions">' +
+        '<button type="submit" class="btn btn-primary">Salvar Colaborador</button>' +
+        (prefix === 'edit' ? 
+          '<button type="button" class="btn-secondary" id="edit-toggle-status">' + (data.ativo !== false ? 'Inativar' : 'Ativar') + '</button>' +
+          '<button type="button" class="btn-danger-outline" id="edit-delete-btn">Excluir</button>' 
+          : '') +
+      '</div>';
+  }
+
+  // ======= Suporte a uploads de foto Base64 =======
+  function bindPhotoUpload(prefix) {
+    var fileInput = document.getElementById(prefix + "-foto-file");
+    if (!fileInput) return;
+    fileInput.addEventListener("change", function(e) {
+      var file = e.target.files[0];
+      if (file) {
+        var reader = new FileReader();
+        reader.onload = function(evt) {
+          var base64 = evt.target.result;
+          document.getElementById(prefix + "-foto-base64").value = base64;
+          var container = fileInput.closest(".photo-upload");
+          var oldPreview = container.querySelector(".photo-preview, .photo-preview-placeholder");
+          var img = document.createElement("img");
+          img.src = base64;
+          img.className = "photo-preview";
+          img.id = prefix + "-preview-img";
+          oldPreview.replaceWith(img);
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  }
+
+  // ======= Seleção de Região / Localidade / RA =======
+  function bindRegionEvents(prefix, data) {
+    var regiaoSel = document.getElementById(prefix + "-regiao");
+    var locSel = document.getElementById(prefix + "-localidade");
+    var raInput = document.getElementById(prefix + "-ra");
+
+    function updateLocalidades(selectedReg, targetLoc) {
+      locSel.innerHTML = '<option value="">Selecione...</option>';
+      raInput.value = "";
+      if (selectedReg && REGIOES[selectedReg]) {
+        REGIOES[selectedReg].forEach(function(item) {
+          var sel = item.localidade === targetLoc ? 'selected' : '';
+          locSel.innerHTML += '<option value="' + item.localidade + '" ' + sel + '>' + item.localidade + '</option>';
+        });
+        if (targetLoc) {
+          var found = REGIOES[selectedReg].find(function(i){ return i.localidade === targetLoc; });
+          if (found) raInput.value = found.ra;
         }
+      }
+    }
+
+    regiaoSel.addEventListener("change", function() {
+      updateLocalidades(this.value, null);
+    });
+
+    locSel.addEventListener("change", function() {
+      var selectedReg = regiaoSel.value;
+      var selectedLoc = this.value;
+      if (selectedReg && selectedLoc && REGIOES[selectedReg]) {
+        var found = REGIOES[selectedReg].find(function(i){ return i.localidade === selectedLoc; });
+        raInput.value = found ? found.ra : "";
       } else {
-        localStorage.setItem("sac-users", JSON.stringify(state.users));
-        return true;
+        raInput.value = "";
       }
-    }
+    });
 
-    function findUser(username){
-      var u = (username||"").trim().toLowerCase();
-      for(var i=0;i<state.users.length;i++){
-        if(state.users[i].username.toLowerCase() === u) return state.users[i];
-      }
-      return null;
-    }
-
-    // ---------- Render ----------
-    function render(){
-      if(!state.booted){
-        app.innerHTML = '<div class="loading-wrap"><span class="spinner"></span>Carregando…</div>';
-        return;
-      }
-      var html = "";
-      if(state.screen === "login") html = renderLogin();
-      else if(state.screen === "changePassword") html = renderChangePassword();
-      else if(state.screen === "maintenance") html = renderMaintenance();
-      else if(state.screen === "admin") html = renderAdmin();
-      else html = renderLogin();
-
-      if(state.screen === "adminGate"){
-        html = renderLogin();
-      }
-
-      app.innerHTML = html + (state.screen === "adminGate" ? renderAdminGateModal() : "") +
-        (state.toast ? '<div class="toast" id="toast-el">'+escapeHTML(state.toast)+'</div>' : "");
-      attachHandlers();
-    }
-
-    function renderLogin(){
-      return ''+
-      '<div class="center-wrap">'+
-        '<div style="width:100%; max-width:420px;">'+
-          '<div class="brand" style="flex-direction:column; margin-bottom:4px;">'+
-            logoSVG(52)+
-            '<div class="brand-text" style="text-align:center; margin-top:10px;">'+
-              '<div class="brand-title">SAC DETRAN</div>'+
-              '<div class="brand-sub">Portal do Colaborador</div>'+
-            '</div>'+
-          '</div>'+
-          '<svg class="route-svg" viewBox="0 0 220 14"><path d="M2 10 L40 10 L55 4 L80 4 L95 10 L140 10 L155 4 L180 4 L195 10 L218 10"/></svg>'+
-          '<div class="card">'+
-            (state.error ? '<div class="error-box">'+escapeHTML(state.error)+'</div>' : '')+
-            '<form id="login-form">'+
-              '<div class="field">'+
-                '<label for="login-user">Usuário</label>'+
-                '<input type="text" id="login-user" autocomplete="username" placeholder="Seu usuário" autocapitalize="none">'+
-              '</div>'+
-              '<div class="field">'+
-                '<label for="login-pass">Senha</label>'+
-                '<div class="input-row">'+
-                  '<input type="password" id="login-pass" autocomplete="current-password" placeholder="Sua senha">'+
-                  '<button type="button" class="toggle-eye" id="toggle-login-pass" aria-label="Mostrar senha">'+eyeSVG(false)+'</button>'+
-                '</div>'+
-              '</div>'+
-              '<button type="submit" class="btn btn-primary">Entrar</button>'+
-            '</form>'+
-            '<div class="center-link"><button class="link-btn" id="open-admin-gate">Acesso administrativo</button></div>'+
-          '</div>'+
-        '</div>'+
-      '</div>';
-    }
-
-    function renderAdminGateModal(){
-      return ''+
-      '<div class="modal-overlay" id="admin-gate-overlay">'+
-        '<div class="card" style="max-width:380px;">'+
-          '<div class="brand-text" style="text-align:center; margin-bottom:14px;">'+
-            '<div class="brand-title" style="font-size:19px;">Área administrativa</div>'+
-            '<div class="brand-sub">Autenticação restrita</div>'+
-          '</div>'+
-          (state.error ? '<div class="error-box">'+escapeHTML(state.error)+'</div>' : '')+
-          '<form id="admin-gate-form">'+
-            '<div class="field">'+
-              '<label for="admin-code">Código</label>'+
-              '<input type="text" id="admin-code" autocomplete="off" placeholder="Código de acesso">'+
-            '</div>'+
-            '<div class="field">'+
-              '<label for="admin-pass">Senha</label>'+
-              '<div class="input-row">'+
-                '<input type="password" id="admin-pass" autocomplete="off" placeholder="Senha administrativa">'+
-                '<button type="button" class="toggle-eye" id="toggle-admin-pass" aria-label="Mostrar senha">'+eyeSVG(false)+'</button>'+
-              '</div>'+
-            '</div>'+
-            '<button type="submit" class="btn btn-primary">Entrar</button>'+
-            '<button type="button" class="btn btn-secondary" id="cancel-admin-gate" style="margin-top:10px;">Cancelar</button>'+
-          '</form>'+
-        '</div>'+
-      '</div>';
-    }
-
-    function renderChangePassword(){
-      return ''+
-      '<div class="center-wrap">'+
-        '<div style="width:100%; max-width:420px;">'+
-          '<div class="brand" style="flex-direction:column; margin-bottom:4px;">'+
-            logoSVG(46)+
-            '<div class="brand-text" style="text-align:center; margin-top:10px;">'+
-              '<div class="brand-title" style="font-size:20px;">Primeiro acesso</div>'+
-              '<div class="brand-sub">Defina sua nova senha</div>'+
-            '</div>'+
-          '</div>'+
-          '<div class="card">'+
-            '<p style="color:var(--bluegray); font-size:13px; margin-top:0;">Por segurança, você precisa trocar a senha temporária antes de continuar, '+escapeHTML(state.currentUser ? state.currentUser.username : "")+'.</p>'+
-            (state.error ? '<div class="error-box">'+escapeHTML(state.error)+'</div>' : '')+
-            '<form id="change-pass-form">'+
-              '<div class="field">'+
-                '<label for="new-pass-1">Nova senha</label>'+
-                '<input type="password" id="new-pass-1" autocomplete="new-password" placeholder="Mínimo 6 caracteres">'+
-              '</div>'+
-              '<div class="field">'+
-                '<label for="new-pass-2">Confirmar nova senha</label>'+
-                '<input type="password" id="new-pass-2" autocomplete="new-password" placeholder="Repita a senha">'+
-              '</div>'+
-              '<button type="submit" class="btn btn-primary">Salvar e continuar</button>'+
-            '</form>'+
-          '</div>'+
-        '</div>'+
-      '</div>';
-    }
-
-function renderMaintenance(){
-  var usuario = state.currentUser || {};
-  
-  return ''+
-  // === TOPBAR ===
-  '<div class="topbar">'+
-    '<div class="brand">'+
-      '<svg class="brand-mark" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">'+
-        '<path d="M20 12 H50 C68 12 80 26 80 50 C80 74 68 88 50 88 H20 V64 H48 C56 64 60 58 60 50 C60 42 56 36 48 36 H20 Z" fill="none" stroke="var(--amber)" stroke-width="7" stroke-linejoin="round"/>'+
-        '<circle cx="34" cy="60" r="9" fill="none" stroke="var(--amber)" stroke-width="6"/>'+
-        '<circle cx="60" cy="60" r="9" fill="none" stroke="var(--amber)" stroke-width="6"/>'+
-        '<path d="M34 60 L48 42 L58 42 L50 52 L60 60" fill="none" stroke="var(--amber)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>'+
-        '<path d="M46 40 Q50 32 58 34" fill="none" stroke="var(--amber)" stroke-width="6" stroke-linecap="round"/>'+
-      '</svg>'+
-      '<div>'+
-        '<div class="brand-title">SAC DETRAN</div>'+
-        '<div class="brand-sub">Painel do usuário</div>'+
-      '</div>'+
-    '</div>'+
-    '<div style="display:flex; gap:10px; align-items:center;">'+
-      '<span style="font-size:13px; color:var(--bluegray);">'+escapeHTML(usuario.username)+'</span>'+
-      '<button class="logout-x" id="logout-btn">Sair</button>'+
-    '</div>'+
-  '</div>'+
-
-  // === NAVEGAÇÃO POR ABAS ===
-  '<div class="nav-tabs">'+
-    '<button class="nav-tab active" data-screen="inicio">'+
-      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v9a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1v-9"/></svg>'+
-      'Início'+
-    '</button>'+
-    '<button class="nav-tab" data-screen="adicionar">'+
-      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="16" y1="11" x2="22" y2="11"/></svg>'+
-      'Adicionar colaborador'+
-    '</button>'+
-    '<button class="nav-tab" data-screen="editar">'+
-      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>'+
-      'Editar colaborador'+
-    '</button>'+
-  '</div>'+
-
-  // === CONTEÚDO ===
-  '<div class="content-wrap">'+
-    // Aba INÍCIO
-    '<section class="screen active" id="screen-inicio">'+
-      '<div class="maintenance-card">'+
-        '<svg class="maint-icon" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.77z"/></svg>'+
-        '<div class="maint-title">Em manutenção</div>'+
-        '<p class="maint-text">Esta página está sendo preparada e estará disponível em breve.</p>'+
-      '</div>'+
-    '</section>'+
-
-    // Aba ADICIONAR
-    '<section class="screen" id="screen-adicionar">'+
-      '<div class="maintenance-card">'+
-        '<svg class="maint-icon" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.77z"/></svg>'+
-        '<div class="maint-title">Em manutenção</div>'+
-        '<p class="maint-text">Esta página está sendo preparada e estará disponível em breve.</p>'+
-      '</div>'+
-    '</section>'+
-
-    // Aba EDITAR
-    '<section class="screen" id="screen-editar">'+
-      '<div class="maintenance-card">'+
-        '<svg class="maint-icon" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.77z"/></svg>'+
-        '<div class="maint-title">Em manutenção</div>'+
-        '<p class="maint-text">Esta página está sendo preparada e estará disponível em breve.</p>'+
-      '</div>'+
-    '</section>'+
-  '</div>';
-}
-
-    function renderAdmin(){
-      var rows = state.users.map(function(u){
-        var statusBadge = u.active ? '<span class="badge badge-active">Ativo</span>' : '<span class="badge badge-inactive">Inativo</span>';
-        var tempBadge = u.tempPassword ? '<span class="badge badge-temp">Senha temp.</span>' : '';
-        return '<tr>'+
-          '<td>'+escapeHTML(u.username)+'</td>'+
-          '<td class="user-cpf">'+escapeHTML(formatCPF(u.cpf))+'</td>'+
-          '<td>'+statusBadge+tempBadge+'</td>'+
-          '<td>'+
-            '<div class="row-actions">'+
-              '<button class="btn btn-sm btn-ghost-teal" data-action="reset" data-username="'+escapeHTML(u.username)+'">Resetar senha</button>'+
-              '<button class="btn btn-sm '+(u.active ? 'btn-danger-outline' : 'btn-ghost-teal')+'" data-action="toggle" data-username="'+escapeHTML(u.username)+'">'+(u.active ? 'Inativar' : 'Ativar')+'</button>'+
-            '</div>'+
-          '</td>'+
-        '</tr>';
-      }).join("");
-
-      return ''+
-      '<div class="topbar">'+
-        '<div class="brand">'+logoSVG(30)+'<div class="brand-text"><div class="brand-title" style="font-size:17px;">SAC DETRAN</div><div class="brand-sub" style="font-size:8.5px;">Painel administrativo</div></div></div>'+
-        '<button class="logout-x" id="logout-btn">Sair</button>'+
-      '</div>'+
-      '<div class="dash-wrap">'+
-        '<div class="panel">'+
-          '<div class="section-title">Novo usuário</div>'+
-          '<div class="section-sub">O nome de usuário é definido manualmente. A senha é gerada automaticamente e deve ser trocada no primeiro acesso.</div>'+
-          (state.error ? '<div class="error-box">'+escapeHTML(state.error)+'</div>' : '')+
-          '<form id="create-user-form">'+
-            '<div class="grid-2">'+
-              '<div class="field">'+
-                '<label for="new-username">Usuário</label>'+
-                '<input type="text" id="new-username" placeholder="ex: joao.silva" autocapitalize="none">'+
-              '</div>'+
-              '<div class="field">'+
-                '<label for="new-cpf">CPF</label>'+
-                '<input type="text" id="new-cpf" placeholder="000.000.000-00" inputmode="numeric" maxlength="14">'+
-              '</div>'+
-            '</div>'+
-            '<button type="submit" class="btn btn-primary" style="max-width:220px;">Gerar acesso</button>'+
-          '</form>'+
-          (state.lastCredential ? renderCredentialResult() : '')+
-        '</div>'+
-        '<div class="panel">'+
-          '<div class="section-title">Usuários cadastrados</div>'+
-          '<div class="section-sub">'+state.users.length+' usuário(s) no sistema.</div>'+
-          (state.users.length === 0 ? '<div class="empty-state">Nenhum usuário cadastrado ainda. Crie o primeiro acima.</div>' : '<table><thead><tr><th>Usuário</th><th>CPF</th><th>Status</th><th>Ações</th></tr></thead><tbody>'+rows+'</tbody></table>')+
-        '</div>'+
-      '</div>';
-    }
-
-    function renderCredentialResult(){
-      var c = state.lastCredential;
-      return ''+
-      '<div class="credential-result">'+
-        '<div class="cred-row"><span class="cred-label">Usuário</span><span class="cred-value">'+escapeHTML(c.username)+'</span></div>'+
-        '<div class="cred-row"><span class="cred-label">CPF</span><span class="cred-value">'+escapeHTML(formatCPF(c.cpf))+'</span></div>'+
-        '<div class="cred-row"><span class="cred-label">Senha temporária</span><span style="display:flex; align-items:center; gap:8px;"><span class="cred-value">'+escapeHTML(c.password)+'</span><button class="copy-btn" id="copy-cred" type="button">Copiar</button></span></div>'+
-        '<div class="hint">Repasse esses dados ao usuário. A senha deverá ser trocada no primeiro acesso.</div>'+
-      '</div>';
-    }
-
-    function attachHandlers(){
-  // ===== HANDLERS EXISTENTES =====
-  var loginForm = document.getElementById("login-form");
-  if(loginForm) loginForm.addEventListener("submit", handleLogin);
-
-  var toggleLoginPass = document.getElementById("toggle-login-pass");
-  if(toggleLoginPass) toggleLoginPass.addEventListener("click", function(){ 
-    togglePassVisibility("login-pass", toggleLoginPass); 
-  });
-
-  var openGate = document.getElementById("open-admin-gate");
-  if(openGate) openGate.addEventListener("click", function(){ 
-    state.screen = "adminGate"; 
-    state.error = ""; 
-    render(); 
-  });
-
-  var adminGateForm = document.getElementById("admin-gate-form");
-  if(adminGateForm) adminGateForm.addEventListener("submit", handleAdminGate);
-
-  var toggleAdminPass = document.getElementById("toggle-admin-pass");
-  if(toggleAdminPass) toggleAdminPass.addEventListener("click", function(){ 
-    togglePassVisibility("admin-pass", toggleAdminPass); 
-  });
-
-  var cancelGate = document.getElementById("cancel-admin-gate");
-  if(cancelGate) cancelGate.addEventListener("click", function(){ 
-    state.screen = "login"; 
-    state.error = ""; 
-    render(); 
-  });
-
-  var createUserForm = document.getElementById("create-user-form");
-  if(createUserForm){
-    createUserForm.addEventListener("submit", handleCreateUser);
-    var cpfInput = document.getElementById("new-cpf");
-    if(cpfInput){
-      cpfInput.addEventListener("input", function(e){ 
-        e.target.value = formatCPF(e.target.value); 
-      });
+    if (data && data.regiao) {
+      updateLocalidades(data.regiao, data.localidade);
     }
   }
 
-  var copyCred = document.getElementById("copy-cred");
-  if(copyCred) copyCred.addEventListener("click", handleCopyCred);
+  // ======= Controle Dinâmico de Férias =======
+  function bindFeriasEvents(prefix, initialFerias) {
+    var container = document.getElementById(prefix + "-ferias-container");
+    var addBtn = document.getElementById(prefix + "-add-ferias");
 
-  var changePassForm = document.getElementById("change-pass-form");
-  if(changePassForm) changePassForm.addEventListener("submit", handleChangePass);
+    function addFeriasRow(inicioVal, fimVal) {
+      var row = document.createElement("div");
+      row.className = "ferias-row";
+      row.innerHTML = '' +
+        '<div class="field" style="margin:0;"><label>Data Início</label><input type="date" class="ferias-inicio" value="' + (inicioVal || '') + '"></div>' +
+        '<div class="field" style="margin:0;"><label>Data Fim</label><input type="date" class="ferias-fim" value="' + (fimVal || '') + '"></div>' +
+        '<button type="button" class="remove-ferias">Remover</button>';
+      
+      row.querySelector(".remove-ferias").addEventListener("click", function() {
+        row.remove();
+      });
+      container.appendChild(row);
+    }
 
-  // Botão Sair - UMA VEZ SÓ
-  var logoutBtn = document.getElementById("logout-btn");
-  if(logoutBtn) logoutBtn.addEventListener("click", handleLogout);
-  
-  var logoutBtn2 = document.getElementById("logout-btn-2");
-  if(logoutBtn2) logoutBtn2.addEventListener("click", handleLogout);
+    if (initialFerias && initialFerias.length > 0) {
+      initialFerias.forEach(function(f){ addFeriasRow(f.inicio, f.fim); });
+    }
 
-  // Handlers dos botões de ação (reset e toggle)
-  document.querySelectorAll("[data-action]").forEach(function(btn){
-    btn.addEventListener("click", function(){
-      var act = btn.getAttribute("data-action");
-      var u = btn.getAttribute("data-username");
-      if(act === "reset") handleResetUserPass(u);
-      else if(act === "toggle") handleToggleUserStatus(u);
+    addBtn.addEventListener("click", function() {
+      addFeriasRow("", "");
+    });
+  }
+
+  function getFeriasData(prefix) {
+    var container = document.getElementById(prefix + "-ferias-container");
+    var rows = container.querySelectorAll(".ferias-row");
+    var list = [];
+    rows.forEach(function(r) {
+      var inicio = r.querySelector(".ferias-inicio").value;
+      var fim = r.querySelector(".ferias-fim").value;
+      if (inicio || fim) {
+        list.push({ inicio: inicio, fim: fim });
+      }
+    });
+    return list;
+  }
+
+  // ======= Inicialização Form Adicionar =======
+  var addForm = document.getElementById("add-form");
+  addForm.innerHTML = buildFormFields("add");
+  bindPhotoUpload("add");
+  bindRegionEvents("add", null);
+  bindFeriasEvents("add", []);
+
+  addForm.addEventListener("submit", function(e) {
+    e.preventDefault();
+    var novo = {
+      id: Date.now().toString(),
+      foto: document.getElementById("add-foto-base64").value,
+      nome: document.getElementById("add-nome").value,
+      email: document.getElementById("add-email").value,
+      cargo: document.getElementById("add-cargo").value,
+      celula: document.getElementById("add-celula").value,
+      jornada: document.getElementById("add-jornada").value,
+      regiao: document.getElementById("add-regiao").value,
+      localidade: document.getElementById("add-localidade").value,
+      ra: document.getElementById("add-ra").value,
+      ferias: getFeriasData("add"),
+      ativo: true
+    };
+
+    var list = getColaboradores();
+    list.push(novo);
+    saveColaboradores(list);
+
+    document.getElementById("add-feedback").innerHTML = '<div class="success-box">Colaborador cadastrado com sucesso!</div>';
+    addForm.reset();
+    document.getElementById("add-ferias-container").innerHTML = "";
+    document.getElementById("add-foto-base64").value = "";
+    var currentImg = addForm.querySelector(".photo-preview");
+    if (currentImg) {
+      var placeholder = document.createElement("div");
+      placeholder.className = "photo-preview-placeholder";
+      placeholder.id = "add-preview-placeholder";
+      placeholder.textContent = "Foto";
+      currentImg.replaceWith(placeholder);
+    }
+
+    setTimeout(function(){ document.getElementById("add-feedback").innerHTML = ""; }, 3000);
+  });
+
+  // ======= Inicialização Form Editar =======
+  function populateEditSelect() {
+    var select = document.getElementById("edit-select");
+    var list = getColaboradores();
+    select.innerHTML = '<option value="">Selecione um colaborador…</option>';
+    list.forEach(function(c) {
+      select.innerHTML += '<option value="' + c.id + '">' + c.nome + ' (' + c.cargo + ')</option>';
+    });
+  }
+
+  document.getElementById("edit-select").addEventListener("change", function() {
+    var id = this.value;
+    var wrap = document.getElementById("edit-form-wrap");
+    if (!id) {
+      wrap.innerHTML = "";
+      return;
+    }
+
+    var list = getColaboradores();
+    var colab = list.find(function(c){ return c.id === id; });
+    if (!colab) return;
+
+    wrap.innerHTML = '<form id="edit-form">' + buildFormFields("edit", colab) + '</form>';
+    bindPhotoUpload("edit");
+    bindRegionEvents("edit", colab);
+    bindFeriasEvents("edit", colab.ferias || []);
+
+    document.getElementById("edit-form").addEventListener("submit", function(e) {
+      e.preventDefault();
+      colab.foto = document.getElementById("edit-foto-base64").value;
+      colab.nome = document.getElementById("edit-nome").value;
+      colab.email = document.getElementById("edit-email").value;
+      colab.cargo = document.getElementById("edit-cargo").value;
+      colab.celula = document.getElementById("edit-celula").value;
+      colab.jornada = document.getElementById("edit-jornada").value;
+      colab.regiao = document.getElementById("edit-regiao").value;
+      colab.localidade = document.getElementById("edit-localidade").value;
+      colab.ra = document.getElementById("edit-ra").value;
+      colab.ferias = getFeriasData("edit");
+
+      saveColaboradores(list);
+      showToast("Colaborador atualizado com sucesso!");
+      populateEditSelect();
+      document.getElementById("edit-select").value = colab.id;
+    });
+
+    document.getElementById("edit-toggle-status").addEventListener("click", function() {
+      colab.ativo = !(colab.ativo !== false);
+      saveColaboradores(list);
+      showToast(colab.ativo ? "Colaborador ativado!" : "Colaborador inativado!");
+      document.getElementById("edit-select").dispatchEvent(new Event("change"));
+    });
+
+    document.getElementById("edit-delete-btn").addEventListener("click", function() {
+      if (confirm("Tem certeza que deseja excluir este colaborador?")) {
+        list = list.filter(function(c){ return c.id !== colab.id; });
+        saveColaboradores(list);
+        showToast("Colaborador excluído.");
+        wrap.innerHTML = "";
+        populateEditSelect();
+      }
     });
   });
 
-  // ===== NOVOS HANDLERS PARA O PAINEL (APENAS UMA VEZ) =====
-  
-  // Navegação das abas
-  document.querySelectorAll(".nav-tab").forEach(function(tab){
-    tab.addEventListener("click", function(){
-      // Remove active de todas as abas
-      document.querySelectorAll(".nav-tab").forEach(function(t){ 
-        t.classList.remove("active"); 
-      });
-      // Remove active de todas as telas
-      document.querySelectorAll(".screen").forEach(function(s){ 
-        s.classList.remove("active"); 
-      });
-      // Adiciona active na aba clicada
-      tab.classList.add("active");
-      // Mostra a tela correspondente
-      var screenId = "screen-" + tab.dataset.screen;
-      var targetScreen = document.getElementById(screenId);
-      if(targetScreen) targetScreen.classList.add("active");
-    });
-  });
-}
+  // Render inicial
+  renderInicio();
 
-    function togglePassVisibility(inputId, btn){
-      var inp = document.getElementById(inputId);
-      if(!inp) return;
-      var show = inp.type === "password";
-      inp.type = show ? "text" : "password";
-      btn.innerHTML = eyeSVG(show);
-    }
+})();
+</script>
 
-    function handleLogin(e){
-      e.preventDefault();
-      state.error = "";
-      var uVal = (document.getElementById("login-user").value||"").trim();
-      var pVal = document.getElementById("login-pass").value||"";
-
-      if(!uVal || !pVal){
-        state.error = "Preencha usuário e senha.";
-        render();
-        return;
-      }
-
-      var user = findUser(uVal);
-      if(!user || user.password !== pVal){
-        state.error = "Usuário ou senha inválidos.";
-        render();
-        return;
-      }
-
-      if(!user.active){
-        state.error = "Usuário inativo. Fale com a administração.";
-        render();
-        return;
-      }
-
-      state.currentUser = user;
-      state.isAdmin = false;
-
-      if(user.tempPassword){
-        state.screen = "changePassword";
-      } else {
-        state.screen = "maintenance";
-      }
-      render();
-    }
-
-    function handleAdminGate(e){
-      e.preventDefault();
-      state.error = "";
-      var code = (document.getElementById("admin-code").value||"").trim();
-      var pass = document.getElementById("admin-pass").value||"";
-
-      if(code === ADMIN_CODE && pass === ADMIN_PASS){
-        state.isAdmin = true;
-        state.screen = "admin";
-        state.error = "";
-        render();
-      } else {
-        state.error = "Código ou senha incorretos.";
-        render();
-      }
-    }
-
-    async function handleCreateUser(e){
-      e.preventDefault();
-      state.error = "";
-      var username = (document.getElementById("new-username").value||"").trim();
-      var cpfRaw = onlyDigits(document.getElementById("new-cpf").value||"");
-
-      if(!username){
-        state.error = "Informe o nome de usuário.";
-        render();
-        return;
-      }
-      if(cpfRaw.length !== 11){
-        state.error = "Informe um CPF válido com 11 dígitos.";
-        render();
-        return;
-      }
-      if(findUser(username)){
-        state.error = "Já existe um usuário registrado com este nome.";
-        render();
-        return;
-      }
-
-      var tempPass = genPassword();
-      var newUser = {
-        username: username,
-        cpf: cpfRaw,
-        password: tempPass,
-        tempPassword: true,
-        active: true,
-        createdAt: new Date().toISOString()
-      };
-
-      state.users.push(newUser);
-      var saved = await saveUsers();
-      if(saved){
-        state.lastCredential = { username: username, cpf: cpfRaw, password: tempPass };
-        showToast("Usuário criado com sucesso!");
-      }
-    }
-
-    function handleCopyCred(){
-      if(!state.lastCredential) return;
-      var text = "Usuário: " + state.lastCredential.username + "\nCPF: " + formatCPF(state.lastCredential.cpf) + "\nSenha temporária: " + state.lastCredential.password;
-      if(navigator.clipboard && navigator.clipboard.writeText){
-        navigator.clipboard.writeText(text).then(function(){ showToast("Credenciais copiadas!"); });
-      } else {
-        showToast("Copie manualmente: " + state.lastCredential.password);
-      }
-    }
-
-    async function handleChangePass(e){
-      e.preventDefault();
-      state.error = "";
-      var p1 = document.getElementById("new-pass-1").value||"";
-      var p2 = document.getElementById("new-pass-2").value||"";
-
-      if(p1.length < 6){
-        state.error = "A nova senha deve ter no mínimo 6 caracteres.";
-        render();
-        return;
-      }
-      if(p1 !== p2){
-        state.error = "As senhas não conferem.";
-        render();
-        return;
-      }
-
-      state.currentUser.password = p1;
-      state.currentUser.tempPassword = false;
-
-      var saved = await saveUsers();
-      if(saved){
-        showToast("Senha alterada com sucesso!");
-        state.screen = "maintenance";
-        render();
-      }
-    }
-
-    async function handleResetUserPass(username){
-      var user = findUser(username);
-      if(!user) return;
-      var tempPass = genPassword();
-      user.password = tempPass;
-      user.tempPassword = true;
-
-      var saved = await saveUsers();
-      if(saved){
-        state.lastCredential = { username: user.username, cpf: user.cpf, password: tempPass };
-        showToast("Senha do usuário resetada!");
-      }
-    }
-
-    async function handleToggleUserStatus(username){
-      var user = findUser(username);
-      if(!user) return;
-      user.active = !user.active;
-      var saved = await saveUsers();
-      if(saved){
-        showToast(user.active ? "Usuário ativado!" : "Usuário inativado!");
-      }
-    }
-
-    function handleLogout(){
-      state.currentUser = null;
-      state.isAdmin = false;
-      state.screen = "login";
-      state.error = "";
-      state.lastCredential = null;
-      render();
-    }
-
-    // Inicializar sincronização
-    syncUsers();
-  })();
-  </script>
 </body>
 </html>
