@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SAC DETRAN — Colaboradores</title>
+<title>SAC DETRAN — Acesso ao Sistema</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
@@ -39,6 +39,22 @@
       var(--bg-primary);
     min-height:100vh;
   }
+
+  /* ---- TELA DE LOGIN ---- */
+  .login-wrapper{
+    min-height:100vh; display:flex; align-items:center; justify-content:center; padding:20px;
+  }
+  .login-card{
+    background:var(--bg-card); border:1px solid var(--line); border-radius:16px;
+    padding:36px; width:100%; max-width:420px; box-shadow:0 20px 40px rgba(0,0,0,0.3);
+  }
+  .login-header{text-align:center; margin-bottom:28px;}
+  .login-logo{width:56px; height:56px; margin:0 auto 12px;}
+  .login-title{font-family:var(--font-display); font-weight:700; font-size:24px; color:var(--cream); margin:0;}
+  .login-sub{font-family:var(--font-mono); font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(--mint); margin-top:4px;}
+
+  /* ---- PAINEL PRINCIPAL ---- */
+  .app-container{display:none;}
   .topbar{
     display:flex; align-items:center; justify-content:space-between;
     padding:14px 26px; border-bottom:1px solid var(--line); background:rgba(47,53,61,0.7);
@@ -103,10 +119,10 @@
   .colab-detalhe{font-size:10.5px; color:var(--mint); font-family:var(--font-mono); margin-top:2px;}
   .empty-state{text-align:center; color:var(--bluegray); padding:40px 10px; font-size:13.5px;}
 
-  /* ---- Formulário ---- */
+  /* ---- Formulários e Campos ---- */
   .field{margin-bottom:15px;}
   .field label{display:block; font-family:var(--font-mono); font-size:10.5px; letter-spacing:1.1px; text-transform:uppercase; color:var(--bluegray); margin-bottom:6px;}
-  input[type="text"], input[type="email"], input[type="date"], input[type="time"], input[type="file"], select, textarea{
+  input[type="text"], input[type="password"], input[type="email"], input[type="date"], select{
     width:100%; padding:11px 13px; border-radius:8px; border:1px solid var(--line);
     background:var(--bg-primary); color:var(--offwhite); font-family:var(--font-body); font-size:14px; outline:none;
     transition:border-color .15s, box-shadow .15s;
@@ -143,6 +159,7 @@
   .remove-ferias:hover{background:rgba(193,102,107,0.12);}
 
   .btn{padding:11px 18px; border-radius:8px; border:none; cursor:pointer; font-family:var(--font-display); font-weight:700; font-size:14.5px; letter-spacing:0.3px; transition:filter .15s, transform .1s;}
+  .btn-block{width:100%;}
   .btn:active{transform:scale(0.985);}
   .btn-primary{background:var(--amber); color:#2A2106;}
   .btn-primary:hover{filter:brightness(1.08);}
@@ -154,7 +171,6 @@
   .btn-danger-outline:hover{background:rgba(193,102,107,0.12);}
 
   .form-actions{display:flex; gap:10px; margin-top:22px; flex-wrap:wrap; align-items:center;}
-
   .success-box{background:rgba(139,196,185,0.14); border:1px solid rgba(139,196,185,0.4); color:var(--mint); font-size:13px; padding:10px 12px; border-radius:8px; margin-bottom:16px;}
   .error-box{background:rgba(193,102,107,0.14); border:1px solid rgba(193,102,107,0.4); color:var(--danger-hi); font-size:13px; padding:10px 12px; border-radius:8px; margin-bottom:16px;}
 
@@ -165,81 +181,112 @@
   .toast{
     position:fixed; bottom:24px; left:50%; transform:translateX(-50%);
     background:var(--bg-card-hi); border:1px solid var(--line); color:var(--offwhite);
-    padding:12px 20px; border-radius:9px; font-size:13.5px; z-index:100; box-shadow:0 10px 30px rgba(0,0,0,0.4);
+    padding:12px 20px; border-radius:99px; font-size:13.5px; z-index:100; box-shadow:0 10px 30px rgba(0,0,0,0.4);
   }
 </style>
 </head>
 <body>
 
-<div class="topbar">
-  <div class="brand">
-    <svg class="brand-mark" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-      <path d="M20 12 H50 C68 12 80 26 80 50 C80 74 68 88 50 88 H20 V64 H48 C56 64 60 58 60 50 C60 42 56 36 48 36 H20 Z" fill="none" stroke="var(--amber)" stroke-width="7" stroke-linejoin="round"/>
-      <circle cx="34" cy="60" r="9" fill="none" stroke="var(--amber)" stroke-width="6"/>
-      <circle cx="60" cy="60" r="9" fill="none" stroke="var(--amber)" stroke-width="6"/>
-      <path d="M34 60 L48 42 L58 42 L50 52 L60 60" fill="none" stroke="var(--amber)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
-      <path d="M46 40 Q50 32 58 34" fill="none" stroke="var(--amber)" stroke-width="6" stroke-linecap="round"/>
-    </svg>
-    <div>
-      <div class="brand-title">SAC DETRAN</div>
-      <div class="brand-sub">Painel do usuário</div>
+<!-- VIEW DE LOGIN -->
+<div class="login-wrapper" id="login-view">
+  <div class="login-card">
+    <div class="login-header">
+      <svg class="login-logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <path d="M20 12 H50 C68 12 80 26 80 50 C80 74 68 88 50 88 H20 V64 H48 C56 64 60 58 60 50 C60 42 56 36 48 36 H20 Z" fill="none" stroke="var(--amber)" stroke-width="7" stroke-linejoin="round"/>
+        <circle cx="34" cy="60" r="9" fill="none" stroke="var(--amber)" stroke-width="6"/>
+        <circle cx="60" cy="60" r="9" fill="none" stroke="var(--amber)" stroke-width="6"/>
+        <path d="M34 60 L48 42 L58 42 L50 52 L60 60" fill="none" stroke="var(--amber)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M46 40 Q50 32 58 34" fill="none" stroke="var(--amber)" stroke-width="6" stroke-linecap="round"/>
+      </svg>
+      <h1 class="login-title">SAC DETRAN</h1>
+      <div class="login-sub">Sistema de Gestão Interna</div>
     </div>
-  </div>
-  <button class="logout-x" id="logout-btn">Sair</button>
-</div>
-
-<div class="nav-tabs">
-  <button class="nav-tab active" data-screen="inicio">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v9a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1v-9"/></svg>
-    Início
-  </button>
-  <button class="nav-tab" data-screen="adicionar">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="16" y1="11" x2="22" y2="11"/></svg>
-    Adicionar colaborador
-  </button>
-  <button class="nav-tab" data-screen="editar">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-    Editar colaborador
-  </button>
-</div>
-
-<div class="content-wrap">
-
-  <!-- INÍCIO -->
-  <section class="screen active" id="screen-inicio">
-    <div class="panel">
-      <div class="section-title">Quadro de Colaboradores</div>
-      <div class="section-sub">Acompanhe a distribuição de colaboradores cadastrados por célula.</div>
-      <div id="inicio-content"></div>
-    </div>
-  </section>
-
-  <!-- ADICIONAR COLABORADOR -->
-  <section class="screen" id="screen-adicionar">
-    <div class="panel">
-      <div class="section-title">Adicionar colaborador</div>
-      <div class="section-sub">Preencha os dados abaixo para cadastrar um novo colaborador.</div>
-      <div id="add-feedback"></div>
-      <form id="add-form"></form>
-    </div>
-  </section>
-
-  <!-- EDITAR COLABORADOR -->
-  <section class="screen" id="screen-editar">
-    <div class="panel">
-      <div class="section-title">Editar colaborador</div>
-      <div class="section-sub">Selecione um colaborador já cadastrado para editar os dados, ativar ou inativar o perfil.</div>
+    <div id="login-feedback"></div>
+    <form id="login-form">
       <div class="field">
-        <label for="edit-select">Colaborador</label>
-        <select id="edit-select">
-          <option value="">Selecione um colaborador…</option>
-        </select>
+        <label for="login-user">Usuário</label>
+        <input type="text" id="login-user" placeholder="Digite seu usuário" required>
       </div>
-      <div id="edit-feedback"></div>
-      <div id="edit-form-wrap"></div>
-    </div>
-  </section>
+      <div class="field">
+        <label for="login-pass">Senha</label>
+        <input type="password" id="login-pass" placeholder="••••••••" required>
+      </div>
+      <button type="submit" class="btn btn-primary btn-block" style="margin-top:20px;">Entrar no Sistema</button>
+      <button type="button" class="btn btn-secondary btn-block" id="btn-quick-login" style="margin-top:10px; font-size:12.5px;">Acesso Rápido (Teste)</button>
+    </form>
+  </div>
+</div>
 
+<!-- VIEW DO PAINEL -->
+<div class="app-container" id="app-view">
+  <div class="topbar">
+    <div class="brand">
+      <svg class="brand-mark" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <path d="M20 12 H50 C68 12 80 26 80 50 C80 74 68 88 50 88 H20 V64 H48 C56 64 60 58 60 50 C60 42 56 36 48 36 H20 Z" fill="none" stroke="var(--amber)" stroke-width="7" stroke-linejoin="round"/>
+        <circle cx="34" cy="60" r="9" fill="none" stroke="var(--amber)" stroke-width="6"/>
+        <circle cx="60" cy="60" r="9" fill="none" stroke="var(--amber)" stroke-width="6"/>
+        <path d="M34 60 L48 42 L58 42 L50 52 L60 60" fill="none" stroke="var(--amber)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M46 40 Q50 32 58 34" fill="none" stroke="var(--amber)" stroke-width="6" stroke-linecap="round"/>
+      </svg>
+      <div>
+        <div class="brand-title">SAC DETRAN</div>
+        <div class="brand-sub">Painel do usuário</div>
+      </div>
+    </div>
+    <button class="logout-x" id="logout-btn">Sair</button>
+  </div>
+
+  <div class="nav-tabs">
+    <button class="nav-tab active" data-screen="inicio">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v9a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1v-9"/></svg>
+      Início
+    </button>
+    <button class="nav-tab" data-screen="adicionar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="16" y1="11" x2="22" y2="11"/></svg>
+      Adicionar colaborador
+    </button>
+    <button class="nav-tab" data-screen="editar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+      Editar colaborador
+    </button>
+  </div>
+
+  <div class="content-wrap">
+    <!-- INÍCIO -->
+    <section class="screen active" id="screen-inicio">
+      <div class="panel">
+        <div class="section-title">Quadro de Colaboradores</div>
+        <div class="section-sub">Acompanhe a distribuição de colaboradores cadastrados por célula.</div>
+        <div id="inicio-content"></div>
+      </div>
+    </section>
+
+    <!-- ADICIONAR COLABORADOR -->
+    <section class="screen" id="screen-adicionar">
+      <div class="panel">
+        <div class="section-title">Adicionar colaborador</div>
+        <div class="section-sub">Preencha os dados abaixo para cadastrar um novo colaborador.</div>
+        <div id="add-feedback"></div>
+        <form id="add-form"></form>
+      </div>
+    </section>
+
+    <!-- EDITAR COLABORADOR -->
+    <section class="screen" id="screen-editar">
+      <div class="panel">
+        <div class="section-title">Editar colaborador</div>
+        <div class="section-sub">Selecione um colaborador já cadastrado para editar os dados, ativar ou inativar o perfil.</div>
+        <div class="field">
+          <label for="edit-select">Colaborador</label>
+          <select id="edit-select">
+            <option value="">Selecione um colaborador…</option>
+          </select>
+        </div>
+        <div id="edit-feedback"></div>
+        <div id="edit-form-wrap"></div>
+      </div>
+    </section>
+  </div>
 </div>
 
 <script>
@@ -268,6 +315,51 @@
     "Célula PCD e Isenções", "Célula Certidões e Prontuário", "Célula Suporte e Dúvidas Gerais"
   ];
 
+  // ======= Controle de Autenticação =======
+  var loginView = document.getElementById("login-view");
+  var appView = document.getElementById("app-view");
+  var loginForm = document.getElementById("login-form");
+  var loginFeedback = document.getElementById("login-feedback");
+
+  function setAuthenticated(status) {
+    if (status) {
+      sessionStorage.setItem("sac_detran_auth", "true");
+      loginView.style.display = "none";
+      appView.style.display = "block";
+      renderInicio();
+    } else {
+      sessionStorage.removeItem("sac_detran_auth");
+      loginView.style.display = "flex";
+      appView.style.display = "none";
+    }
+  }
+
+  // Verifica se já estava logado na sessão
+  if (sessionStorage.getItem("sac_detran_auth") === "true") {
+    setAuthenticated(true);
+  }
+
+  loginForm.addEventListener("submit", function(e) {
+    e.preventDefault();
+    var user = document.getElementById("login-user").value.trim();
+    var pass = document.getElementById("login-pass").value.trim();
+
+    if (user === "admin" && pass === "1234") {
+      setAuthenticated(true);
+    } else {
+      loginFeedback.innerHTML = '<div class="error-box">Usuário ou senha incorretos.</div>';
+    }
+  });
+
+  document.getElementById("btn-quick-login").addEventListener("click", function() {
+    setAuthenticated(true);
+  });
+
+  document.getElementById("logout-btn").addEventListener("click", function() {
+    setAuthenticated(false);
+  });
+
+  // ======= Funções de Armazenamento =======
   function getColaboradores() {
     var data = localStorage.getItem("sac_detran_colaboradores");
     return data ? JSON.parse(data) : [];
@@ -285,7 +377,7 @@
     setTimeout(function(){ toast.remove(); }, 3000);
   }
 
-  // ======= Navegação =======
+  // ======= Navegação de Abas =======
   var tabs = document.querySelectorAll(".nav-tab");
   var screens = document.querySelectorAll(".screen");
 
@@ -352,7 +444,6 @@
   // ======= Construir Campos do Formulário =======
   function buildFormFields(prefix, data) {
     data = data || {};
-    var feriasList = data.ferias || [];
 
     var regionOptions = '<option value="">Selecione...</option>';
     Object.keys(REGIOES).forEach(function(r){
@@ -435,7 +526,7 @@
     });
   }
 
-  // ======= Seleção de Região / Localidade / RA =======
+  // ======= Seleção Dinâmica Região / Localidade / RA =======
   function bindRegionEvents(prefix, data) {
     var regiaoSel = document.getElementById(prefix + "-regiao");
     var locSel = document.getElementById(prefix + "-localidade");
@@ -625,9 +716,6 @@
       }
     });
   });
-
-  // Render inicial
-  renderInicio();
 
 })();
 </script>
